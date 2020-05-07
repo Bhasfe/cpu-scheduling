@@ -8,9 +8,10 @@ class algorithm {
      * @param {string} functionName 
      */
 
-    constructor(id,name,isPreemptive,functionName){
+    constructor(id,name,shortName, isPreemptive,functionName){
         this.id = id;
         this.name = name;
+        this.shortName = shortName;
         this.isPreemptive = isPreemptive;
         this.functionName = functionName;
     }

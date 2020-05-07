@@ -153,12 +153,12 @@ const styles = StyleSheet.create({
     rows: {
         // flex : 1,
         flexDirection: 'row',
-        borderColor: 'black',
+        borderColor: '#7D7D7D',
         marginVertical: 0.3
     },
     itemContainer: {
         flex: 1,
-        borderColor: 'black',
+        borderColor: '#7D7D7D',
         borderWidth: 1,
         alignItems: 'center'
     },
