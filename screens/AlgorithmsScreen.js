@@ -12,6 +12,7 @@ const AlgorithmsScreen = props => {
             <AlgorithmsList
                 onPress = {() => props.navigation.navigate({ routeName: 'Simulator' , params : {algorithmId : itemData.item.id}})}
                 name={itemData.item.name}
+                shortName={itemData.item.shortName}
             />
         );
     }
@@ -22,20 +23,33 @@ const AlgorithmsScreen = props => {
                 data={ALGORITHMS}
                 keyExtractor={(item, id) => item.id}
                 renderItem={renderAlgorithms}
-                style = {{width : '100%'}}
+                contentContainerStyle = {styles.flatCss }
             // numColumns = {2}
             />
         </View>
     );
 };
 
+AlgorithmsScreen.navigationOptions = navigationData => {
+    return ({
+        headerShown : false
+    })
+}
+
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding : 10
+        flexDirection:'row',
     },
+    flatCss: {
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        minHeight:200,
+        
+    }
 });
 
 export default AlgorithmsScreen;

@@ -89,11 +89,11 @@ const styles = StyleSheet.create({
     chart: {
         width: '100%',
         padding: 10,
-        borderColor: 'black',
+        borderColor: '#7D7D7D',
     },
     section: {
         backgroundColor: '#ccc',
-        borderColor: 'black',
+        borderColor: '#7D7D7D',
         borderWidth: 0.5,
         alignItems: 'center',
         justifyContent: 'center',
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginVertical: 10,
-        borderColor: 'black',
+        borderColor: '#7D7D7D',
         borderWidth: 1,
     }
 

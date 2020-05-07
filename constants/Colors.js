@@ -1,5 +1,6 @@
 export default {
-    primaryColor : '#0D2877',
+    primaryColor : '#fff',
+    backgroundColor : '#292929',
     accentColor : '',
     titleColor : '',
 }
