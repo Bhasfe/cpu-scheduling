@@ -11,7 +11,7 @@ export const SJF = (processesCopy) => {
 
     do {
         console.log("Current time = " + currentTime);
-        var filtered = processesCopy.filter(p => p.arrivingTime <= currentTime && !finalExecution.includes(p));
+        var filtered = processesCopy.filter(p => p.arrivingTime <= currentTime && (!finalExecution.includes(p)||p.name==='idle'));
         if (filtered.length != 0) {
             var min = filtered[0].cpuBurstTime1;
             var index = 0;
@@ -41,12 +41,12 @@ export const SJF = (processesCopy) => {
 
             do {
                 currentTime++;
-                var temp = processesCopy.filter(p => p.arrivingTime <= currentTime && !finalExecution.includes(p));
+                var temp = processesCopy.filter(p => p.arrivingTime <= currentTime && (!finalExecution.includes(p)||p.name==='idle'));
                 console.log("Current Time ele " + currentTime);
             } while (temp.length === 0);
 
             console.log("ADDING IDLE AT TIME " + currentTime);
-            finalExecution.push(new process("idle", timeStart, timeStart + currentTime, null, null, timeStart, timeStart + currentTime, 0, 0));
+            finalExecution.push(new process("idle", timeStart, currentTime-timeStart, null, null, timeStart, currentTime, 0, 0));
 
         }
     } while (flag != 0);
@@ -79,7 +79,7 @@ export const FCFS = (processesCopy) => {
 
     do {
         console.log("Current time = " + currentTime);
-        var filtered = processesCopy.filter(p => p.arrivingTime <= currentTime && !finalExecution.includes(p));
+        var filtered = processesCopy.filter(p => p.arrivingTime <= currentTime && (!finalExecution.includes(p)||p.name==='idle'));
         if (filtered.length != 0) {
             var min = filtered[0].arrivingTime;
             var index = 0;
@@ -110,12 +110,12 @@ export const FCFS = (processesCopy) => {
             do {
                 
                 currentTime++;
-                var temp = processesCopy.filter(p => p.arrivingTime <= currentTime && !finalExecution.includes(p))
+                var temp = processesCopy.filter(p => p.arrivingTime <= currentTime && (!finalExecution.includes(p)||p.name==='idle'));
                 console.log("Current Time ele " + currentTime);
             } while (temp.length === 0);
 
             console.log("ADDING IDLE AT TIME " + currentTime);
-            finalExecution.push(new process("idle", timeStart, timeStart + currentTime, null, null, timeStart, timeStart + currentTime, 0, 0));
+            finalExecution.push(new process("idle", timeStart, currentTime-timeStart, null, null, timeStart, currentTime, 0, 0));
 
         }
     } while (flag != 0);
