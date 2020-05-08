@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, ScrollView } from 'react-native';
-import { SJF , FCFS, SRTF } from '../data/functions';
+import { SJF, FCFS, SRTF, RR } from '../data/functions';
 
 const renderSections = itemData => {
     return (
@@ -25,7 +25,7 @@ const renderTags = itemData => {
     );
 };
 
-var added =[];
+var added = [];
 const renderCalculations = (itemData) => {
     if (itemData.item.name != 'idle' && !added.includes(itemData.item.name)) {
         added.push(itemData.item.name);
@@ -48,17 +48,19 @@ const GanttChart = props => {
     var processesCopy = [...props.processesList];
     var [finalExecution, averageWait] = [0, 0];
 
-    console.log(props.selectedAlgorithm.functionName);
     switch (props.selectedAlgorithm.functionName) {
         case 'SJF':
             [finalExecution, averageWait] = SJF(processesCopy);
             break;
-        case 'FCFS' :
+        case 'FCFS':
             [finalExecution, averageWait] = FCFS(processesCopy);
             break;
         case 'SRTF':
             [finalExecution, averageWait] = SRTF(processesCopy);
-            break;    
+            break;
+        case 'RR':
+            [finalExecution, averageWait] = RR(processesCopy, props.quantum);
+            break;
     }
 
     return (
