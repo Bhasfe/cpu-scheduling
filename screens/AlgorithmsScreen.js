@@ -32,7 +32,7 @@ const AlgorithmsScreen = props => {
 
 AlgorithmsScreen.navigationOptions = navigationData => {
     return ({
-        headerShown : false
+        headerShown : true
     })
 }
 

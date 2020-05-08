@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, ScrollView } from 'react-native';
-import { SJF , FCFS } from '../data/functions';
+import { SJF , FCFS, SRTF } from '../data/functions';
 
 const renderSections = itemData => {
     return (
@@ -25,8 +25,10 @@ const renderTags = itemData => {
     );
 };
 
+var added =[];
 const renderCalculations = (itemData) => {
-    if (itemData.item.name != 'idle') {
+    if (itemData.item.name != 'idle' && !added.includes(itemData.item.name)) {
+        added.push(itemData.item.name);
         return (
             <View style={styles.calculations}>
                 <View>
@@ -53,6 +55,10 @@ const GanttChart = props => {
             break;
         case 'FCFS' :
             [finalExecution, averageWait] = FCFS(processesCopy);
+            break;
+        case 'SRTF':
+            [finalExecution, averageWait] = SRTF(processesCopy);
+            break;    
     }
 
     return (
