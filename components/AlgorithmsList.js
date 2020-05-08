@@ -1,6 +1,5 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet ,Image, Dimensions} from 'react-native';
-import AutoHeightImage from 'react-native-auto-height-image';
 
 import {icons} from '../assets/icons'
 import Colors from '../constants/Colors';
@@ -71,7 +70,7 @@ const styles = StyleSheet.create({
         bottom:0,
         borderBottomRightRadius:25,
         borderBottomLeftRadius:25,
-        backgroundColor: '#E58769'
+        backgroundColor: Colors.bgBubble,
     }
 
 });
