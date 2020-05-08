@@ -98,10 +98,12 @@ const SimulatorScreen = props => {
 
                 {selectedAlgorithm.shortName==="RR" ? 
                     <View style={styles.quantumContainer}>
-                        <Text>Quantum : </Text>
+                        <View style={styles.quantumLabel}>
+                            <Text>Quantum : </Text>
+                        </View>
                         <View style={styles.quantumInput}>
                             <TextInput
-                                placeholder='Edit'
+                                // placeholder='Edit'
                                 keyboardType={'numeric'}
                                 onChangeText={input => {
                                     setQuantum(parseInt(input));
@@ -170,6 +172,10 @@ const SimulatorScreen = props => {
                                     break;
                                 }
                             }
+                            if(selectedAlgorithm.shortName==='RR' && quantum ===0){
+                                Alert.alert("Invalid values!", "Quantum cannot be 0 !", [{ text: 'OK' }]);
+                                inputValidation = false;                            
+                            }
                             if(inputValidation){
                                 setChartEnable(true);
                             }
@@ -222,7 +228,9 @@ const styles = StyleSheet.create({
     },
     quantumInput : {
         borderBottomColor :'black',
-    }
+        borderBottomWidth : 0.5,
+        marginBottom : 14
+    },
 });
 
 SimulatorScreen.navigationOptions = navigationData => {
