@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, TextInput, Alert ,KeyboardAvoidingView } from 'react-native';
 import { ALGORITHMS } from '../data/algorithms-data';
 import { FlatList } from 'react-native-gesture-handler';
 import CustomButton from '../components/CustomButton';
+import Colors from '../constants/Colors';
 
 import process from '../models/process';
 import GanttChart from '../components/GanttChart';
@@ -16,14 +17,17 @@ const SimulatorScreen = props => {
     const selectedAlgorithm = ALGORITHMS.find(item => item.id === algorithmId);
 
     const InitialProcesses = [
-        new process('P0', 0, 3),
-        new process('P1', 2, 1),
-        new process('P2', 4, 6),
-        new process('P3', 3, 3),
+        new process('P0'),
+        new process('P1'),
+        new process('P2'),
+        new process('P3'),
     ];
+
+    const resetted = [];
 
     const [processesList, setProcessesList] = useState(InitialProcesses);
     const [chartEnable, setChartEnable] = useState(false);
+    const [quantum,setQuantum] = useState(0);
 
     const renderProcesses = (itemData) => {
 
@@ -37,8 +41,9 @@ const SimulatorScreen = props => {
                 </View>
                 <View style={styles.itemContainer}>
                     <TextInput
-                        placeholder='Edit'
-                        keyboardType={'numeric'}
+                        editable = {!chartEnable}
+                        placeholder = 'Edit'
+                        keyboardType='number-pad'
                         onChangeText={input => {
                             processesList[selectedProcessId].arrivingTime = parseInt(input);
                             setProcessesList(processesList);
@@ -48,8 +53,9 @@ const SimulatorScreen = props => {
                 </View>
                 <View style={styles.itemContainer}>
                     <TextInput
-                        placeholder='Edit'
-                        keyboardType={'numeric'}
+                        editable = {!chartEnable}
+                        placeholder = 'Edit'
+                        keyboardType='number-pad'
                         onChangeText={input => {
                             processesList[selectedProcessId].cpuBurstTime1 = parseInt(input);
                             setProcessesList(processesList);
@@ -89,12 +95,32 @@ const SimulatorScreen = props => {
                     data={processesList}
                     renderItem={renderProcesses}
                 />
+
+                {selectedAlgorithm.shortName==="RR" ? 
+                    <View style={styles.quantumContainer}>
+                        <Text>Quantum : </Text>
+                        <View style={styles.quantumInput}>
+                            <TextInput
+                                placeholder='Edit'
+                                keyboardType={'numeric'}
+                                onChangeText={input => {
+                                    setQuantum(parseInt(input));
+                                }}
+                                value={quantum}
+                            />
+                        </View>
+                    </View>
+                    :<></>
+                    
+                }
+
                  </KeyboardAvoidingView>
 
                 {chartEnable ?
                     <GanttChart
                         processesList={processesList}
                         selectedAlgorithm = {selectedAlgorithm}
+                        quantum = {quantum}
                     /> : <></>}
 
             </View>
@@ -103,6 +129,10 @@ const SimulatorScreen = props => {
                     <View style={styles.buttonContainerRow}>
 
                         <CustomButton title='Add Process' onPress={() => {
+                            if(chartEnable){
+                                Alert.alert("Simulation finished", "You have to reset simulation first !", [{ text: 'OK' }]);
+                                return(null);
+                            }
                             if (processesList.length != 0 && parseInt((processesList[processesList.length - 1].name)[1]) + 1 >= MAX_PROCESS) {
                                 Alert.alert("Limit exceeded", "You cannot add more process !", [{ text: 'OK' }]);
                                 return (null);
@@ -113,6 +143,10 @@ const SimulatorScreen = props => {
 
 
                         <CustomButton title='Delete Process' onPress={() => {
+                            if(chartEnable){
+                                Alert.alert("Simulation finished", "You have to reset simulation first !", [{ text: 'OK' }]);
+                                return(null);
+                            }
                             if (processesList.length === 0) {
                                 Alert.alert("Table is empty!", "There is no process !", [{ text: 'OK' }]);
                                 return (null);
@@ -120,17 +154,25 @@ const SimulatorScreen = props => {
                             setProcessesList(current => current.slice(0, current.length - 1));
                         }} ></CustomButton>
 
-
-
                         <CustomButton title='Reset' onPress={() => {
-                            setProcessesList(InitialProcesses);
+                            setProcessesList(resetted);
                             setChartEnable(false);
                         }} ></CustomButton>
 
                     </View>
                     <View>
                         <CustomButton title="RUN" style={{width:'100%'}} onPress={() => {
-                            setChartEnable(true);
+                            var inputValidation = true;
+                            for(let i=0;i<processesList.length;i++){
+                                if(isNaN(processesList[i].arrivingTime)||isNaN(processesList[i].cpuBurstTime1)||processesList[i].cpuBurstTime1===0){
+                                    Alert.alert("Invalid values!", "Please check the values !", [{ text: 'OK' }]);
+                                    inputValidation = false;
+                                    break;
+                                }
+                            }
+                            if(inputValidation){
+                                setChartEnable(true);
+                            }
                         }} >
                         </CustomButton>
                     </View>
@@ -148,17 +190,17 @@ const styles = StyleSheet.create({
     },
     container: {
         width: '100%',
-        marginVertical : 10
+        marginVertical : 10,
     },
     rows: {
         // flex : 1,
         flexDirection: 'row',
-        borderColor: '#7D7D7D',
+        borderColor: Colors.borderColorSimulator,
         marginVertical: 0.3
     },
     itemContainer: {
         flex: 1,
-        borderColor: '#7D7D7D',
+        borderColor: Colors.borderColorSimulator,
         borderWidth: 1,
         alignItems: 'center'
     },
@@ -172,6 +214,14 @@ const styles = StyleSheet.create({
     },
     caption: {
         fontFamily: 'open-sans-bold',
+    },
+    quantumContainer : {
+        flexDirection : 'row',
+        justifyContent : 'center',
+        alignItems : 'center',
+    },
+    quantumInput : {
+        borderBottomColor :'black',
     }
 });
 
