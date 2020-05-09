@@ -2,13 +2,15 @@ import React from 'react';
 import { View, Text, StyleSheet, FlatList, ScrollView, Dimensions } from 'react-native';
 import { SJF, FCFS, SRTF, RR } from '../data/functions';
 
+import Color from '../constants/Colors'
+
 const windowWidth = Dimensions.get('window').width;
 
 const renderSections = itemData => {
     return (
         <View style={{ ...styles.section, flex: itemData.item.cpuBurstTime1 }}>
             <View >
-                <Text>{itemData.item.name}</Text>
+                <Text style={{color: Color.screen}}>{itemData.item.name}</Text>
             </View>
         </View>
     );
@@ -34,10 +36,10 @@ const renderCalculations = (itemData) => {
         return (
             <View style={styles.calculations}>
                 <View>
-                    <Text>wat({itemData.item.name}) = {itemData.item.wat}</Text>
+                    <Text style={{ color: Color.red}}>wat({itemData.item.name}) = {itemData.item.wat}</Text>
                 </View>
                 <View>
-                    <Text>tat({itemData.item.name}) = {itemData.item.tat}</Text>
+                    <Text style={{ color: Color.red}}>tat({itemData.item.name}) = {itemData.item.tat}</Text>
                 </View>
             </View>
         );
@@ -81,7 +83,7 @@ const GanttChart = props => {
 
     return (
         <View>
-            <ScrollView horizontal={true} contentContainerStyle={{alignItems:'center',justifyContent:'center'}} >
+            <ScrollView horizontal={true}  showsHorizontalScrollIndicator={false} contentContainerStyle={{alignItems:'center',justifyContent:'center'}} >
                 <View style={{...styles.chart,width : totalExecution>windowWidth && finalExecution.length>=6 ? totalExecution : windowWidth-40}}>
                     <FlatList
                         style={styles.chart}
@@ -105,10 +107,10 @@ const GanttChart = props => {
                 </View>
             </ScrollView>
             <View style={{ alignItems: 'center', marginVertical: 10 }}>
-                <Text>Average waiting time = {averageWait}</Text>
+                <Text style={{color: Color.backgroundColor}}>Average waiting time = {averageWait}</Text>
             </View>
             <View style={{ alignItems: 'center', marginVertical: 10 }}>
-                <Text>CPU Utilization = %{cpuUtilization}</Text>
+                <Text style={{color: Color.backgroundColor}}>CPU Utilization = %{cpuUtilization}</Text>
             </View>
         </View>
     );
@@ -121,8 +123,8 @@ const styles = StyleSheet.create({
     },
     section: {
         minWidth : 35,
-        backgroundColor: '#ccc',
-        borderColor: '#7D7D7D',
+        backgroundColor: Color.lightRed,
+        borderColor: Color.screen,
         borderWidth: 0.5,
         alignItems: 'center',
         justifyContent: 'center',
@@ -137,8 +139,10 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        borderColor: '#7D7D7D',
+        borderColor: Color.borderColorSimulator,
         borderWidth: 1,
+        paddingTop:10,
+        paddingBottom:10,
         marginLeft: 10,
     }
 

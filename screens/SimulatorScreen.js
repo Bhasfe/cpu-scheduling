@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Alert ,KeyboardAvoidingView,Keyboard,TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Alert ,KeyboardAvoidingView, SafeAreaView, Keyboard,TouchableWithoutFeedback } from 'react-native';
 import { ALGORITHMS } from '../data/algorithms-data';
-import { FlatList } from 'react-native-gesture-handler';
+import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import CustomButton from '../components/CustomButton';
 import Colors from '../constants/Colors';
 
@@ -28,9 +28,9 @@ const SimulatorScreen = props => {
     const [processesList, setProcessesList] = useState(InitialProcesses);
     const [chartEnable, setChartEnable] = useState(false);
     const [quantum,setQuantum] = useState(0);
-
+  
     const renderProcesses = (itemData) => {
-
+      
         let selectedProcess = processesList.find(item => item.name === itemData.item.name);
         let selectedProcessId = processesList.indexOf(selectedProcess);
 
@@ -71,7 +71,7 @@ const SimulatorScreen = props => {
 
     return (
         <View style={styles.redBg}>
-            <View style={styles.screen}>
+            <SafeAreaView style={styles.screen}>
                 <View style={styles.container}>
                     <View style={{ ...styles.rows,borderBottomWidth:2, marginBottom: 5 }}>
                         <View style={styles.itemContainer}>
@@ -111,6 +111,7 @@ const SimulatorScreen = props => {
                                         setQuantum(parseInt(input));
                                     }}
                                     value={quantum}
+                                    style={styles.quantumText}
                                 />
                             </View>
                         </View>
@@ -142,6 +143,7 @@ const SimulatorScreen = props => {
                                 }
                                 const newName = processesList.length === 0 ? 'P0' : 'P' + (parseInt((processesList[processesList.length - 1].name)[1]) + 1);
                                 setProcessesList(current => [...current, new process(newName)]);
+                                
                             }} ></CustomButton>
 
 
@@ -185,7 +187,7 @@ const SimulatorScreen = props => {
                             </CustomButton>
                         </View>
                     </View>
-            </View>
+            </SafeAreaView>
         </View>
     );
 };
@@ -193,9 +195,11 @@ const SimulatorScreen = props => {
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         padding: 15,
+        paddingTop:20,
+        paddingBottom:40,
         borderTopLeftRadius:40,
         borderTopRightRadius:40,
         backgroundColor:Colors.screen
@@ -240,11 +244,12 @@ const styles = StyleSheet.create({
         alignItems : 'center',
     },
     quantumInput : {
-        borderBottomColor :'black',
+        borderBottomColor : Colors.red,
         borderBottomWidth : 0.5,
-        width : '5%'
-    },quantumLabel:{
-        
+        width : '10%'
+    }
+    ,quantumText:{
+        flex:1
     },
     input : {
         flex:1,
