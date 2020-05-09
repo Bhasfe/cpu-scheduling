@@ -6,6 +6,7 @@ class algorithm {
      * @param {string} name 
      * @param {boolean} isPreemptive 
      * @param {string} functionName 
+     * @param {string} shortName
      */
 
     constructor(id,name,shortName, isPreemptive,functionName){

@@ -1,6 +1,5 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet ,Image, Dimensions} from 'react-native';
-import AutoHeightImage from 'react-native-auto-height-image';
 
 import {icons} from '../assets/icons'
 import Colors from '../constants/Colors';
@@ -23,11 +22,7 @@ const AlgorithmsList = props => {
         </TouchableOpacity>
     );
 }
-/*renderItem={({item}) => {
-    return (
-        
-    )
-}}*/
+
 const styles = StyleSheet.create({
     container : {
         flex: 1,
@@ -41,8 +36,6 @@ const styles = StyleSheet.create({
         justifyContent : 'center',
         alignItems : 'center',
         borderRadius : 25,
-       
-
     },
     title : {
         fontFamily : 'open-sans',
@@ -71,7 +64,7 @@ const styles = StyleSheet.create({
         bottom:0,
         borderBottomRightRadius:25,
         borderBottomLeftRadius:25,
-        backgroundColor: '#E58769'
+        backgroundColor: Colors.bgBubble,
     }
 
 });

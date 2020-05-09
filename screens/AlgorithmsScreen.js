@@ -24,7 +24,6 @@ const AlgorithmsScreen = props => {
                 keyExtractor={(item, id) => item.id}
                 renderItem={renderAlgorithms}
                 contentContainerStyle = {styles.flatCss }
-            // numColumns = {2}
             />
         </View>
     );
