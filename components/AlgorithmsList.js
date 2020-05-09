@@ -9,7 +9,7 @@ const WIDTH = Dimensions.get('window').width
 const AlgorithmsList = props => {
    
     return(
-        <TouchableOpacity onPress={props.onPress} style={styles.container}>
+        <TouchableOpacity onPress={props.onPress} style={styles.container} activeOpacity={1}>
             <View style={styles.gridItem} >
                 <Image 
                     style={styles.icon}
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
         bottom:0,
         borderBottomRightRadius:25,
         borderBottomLeftRadius:25,
-        backgroundColor: Colors.bgBubble,
+        backgroundColor: Colors.lightRed,
     }
 
 });
