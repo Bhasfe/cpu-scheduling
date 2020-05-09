@@ -23,7 +23,8 @@ const AlgorithmsScreen = props => {
                 data={ALGORITHMS}
                 keyExtractor={(item, id) => item.id}
                 renderItem={renderAlgorithms}
-                contentContainerStyle = {styles.flatCss }
+                style= {styles.flatList}
+                numColumns={2}
             />
         </View>
     );
@@ -42,12 +43,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection:'row',
     },
-    flatCss: {
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        flexDirection: 'row',
-        minHeight:200,
-        
+    flatList: {
+        flexDirection:'column'
     }
 });
 
