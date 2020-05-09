@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     flatContainer: {
         flex: 5,
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         flexDirection:'row',
     },
     flatList: {

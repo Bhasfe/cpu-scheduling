@@ -1,11 +1,11 @@
+import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer,StatusBar } from 'react-navigation';
-
+import { Image } from 'react-native';
 import AlgorithmScreen from '../screens/AlgorithmsScreen';
 import SimulatorScreen from '../screens/SimulatorScreen';
-
+import { ActionBarImage } from '../components/ActionBarImage';
 import Colors from '../constants/Colors';
-
 
 const AppNavigator = createStackNavigator({
     Algorithms : {
@@ -22,6 +22,7 @@ const AppNavigator = createStackNavigator({
         headerBackTitleStyle : {
             fontFamily : 'open-sans',
         },
+        headerRight: () => <ActionBarImage />,
         headerTintColor:'#fff',
         headerStyle: {
             backgroundColor:Colors.red,
