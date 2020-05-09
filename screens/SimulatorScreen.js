@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, TextInput, Alert ,KeyboardAvoidingView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TextInput, Alert ,KeyboardAvoidingView,Keyboard,TouchableWithoutFeedback } from 'react-native';
 import { ALGORITHMS } from '../data/algorithms-data';
 import { FlatList } from 'react-native-gesture-handler';
 import CustomButton from '../components/CustomButton';
@@ -48,7 +48,7 @@ const SimulatorScreen = props => {
                             processesList[selectedProcessId].arrivingTime = parseInt(input);
                             setProcessesList(processesList);
                         }}
-                        value={processesList[selectedProcessId.arrivingTime]}
+                        value={processesList[selectedProcessId].arrivingTime}
                     />
                 </View>
                 <View style={styles.itemContainer}>
@@ -60,7 +60,7 @@ const SimulatorScreen = props => {
                             processesList[selectedProcessId].cpuBurstTime1 = parseInt(input);
                             setProcessesList(processesList);
                         }}
-                        value={processesList[selectedProcessId.cpuBurstTime1]}
+                        value={processesList[selectedProcessId].cpuBurstTime1}
                     />
                 </View>
             </View>
@@ -76,7 +76,6 @@ const SimulatorScreen = props => {
                             Process
                         </Text>
                     </View>
-
                     <View style={styles.itemContainer}>
                         <Text style={styles.caption}>
                             Arriving Time
@@ -115,7 +114,6 @@ const SimulatorScreen = props => {
                     :<></>
                     
                 }
-
                  </KeyboardAvoidingView>
 
                 {chartEnable ?
@@ -140,7 +138,7 @@ const SimulatorScreen = props => {
                                 return (null);
                             }
                             const newName = processesList.length === 0 ? 'P0' : 'P' + (parseInt((processesList[processesList.length - 1].name)[1]) + 1);
-                            setProcessesList(current => [...current, new process(newName, '10', '4')]);
+                            setProcessesList(current => [...current, new process(newName)]);
                         }} ></CustomButton>
 
 
@@ -159,6 +157,7 @@ const SimulatorScreen = props => {
                         <CustomButton title='Reset' onPress={() => {
                             setProcessesList(resetted);
                             setChartEnable(false);
+                            setQuantum(0);
                         }} ></CustomButton>
 
                     </View>
@@ -202,13 +201,14 @@ const styles = StyleSheet.create({
         // flex : 1,
         flexDirection: 'row',
         borderColor: Colors.borderColorSimulator,
-        marginVertical: 0.3
+        marginVertical: 0.3,
+        height : 25,
     },
     itemContainer: {
         flex: 1,
         borderColor: Colors.borderColorSimulator,
         borderWidth: 1,
-        alignItems: 'center'
+        alignItems: 'center',
     },
     buttonContainer: {
       justifyContent: 'center',
@@ -222,6 +222,7 @@ const styles = StyleSheet.create({
         fontFamily: 'open-sans-bold',
     },
     quantumContainer : {
+        marginVertical : 10,
         flexDirection : 'row',
         justifyContent : 'center',
         alignItems : 'center',
@@ -229,8 +230,10 @@ const styles = StyleSheet.create({
     quantumInput : {
         borderBottomColor :'black',
         borderBottomWidth : 0.5,
-        marginBottom : 14
-    },
+        width : '5%'
+    },quantumLabel:{
+        
+    }
 });
 
 SimulatorScreen.navigationOptions = navigationData => {
