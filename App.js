@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, StatusBar } from 'react-native';
 
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
 
 import AppNavigator from './navigation/AppNavigator';
 import { enableScreens } from 'react-native-screens';
-
+import Colors from './constants/Colors'
 const fetchFonts = () => {
   return Font.loadAsync({
     'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
@@ -30,7 +30,12 @@ export default function App() {
   }
 
 
-  return <AppNavigator />;
+  return (
+      <>
+        <StatusBar backgroundColor={Colors.red}  />
+        <AppNavigator />
+      </>
+    );
 }
 
 const styles = StyleSheet.create({

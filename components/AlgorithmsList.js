@@ -9,7 +9,7 @@ const WIDTH = Dimensions.get('window').width
 const AlgorithmsList = props => {
    
     return(
-        <TouchableOpacity onPress={props.onPress} style={styles.container}>
+        <TouchableOpacity onPress={props.onPress} style={styles.container} activeOpacity={1}>
             <View style={styles.gridItem} >
                 <Image 
                     style={styles.icon}
@@ -26,7 +26,6 @@ const AlgorithmsList = props => {
 const styles = StyleSheet.create({
     container : {
         flex: 1,
-        width: (WIDTH/2)-40,
         margin:10,
     
     },
@@ -50,21 +49,19 @@ const styles = StyleSheet.create({
     icon : {
         width:100,
         height:80,
-        position:'absolute',
         zIndex:2,
         top:20,
     },
     bgBubble:{
-        position:'absolute',
         width:'100%',
-        height:80,
-        borderTopRightRadius:170,
-        borderTopLeftRadius:170,
+        height:90,
+        borderTopRightRadius:200,
+        borderTopLeftRadius:200,
         zIndex:0,
         bottom:0,
         borderBottomRightRadius:25,
         borderBottomLeftRadius:25,
-        backgroundColor: Colors.bgBubble,
+        backgroundColor: Colors.lightRed,
     }
 
 });
