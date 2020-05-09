@@ -54,9 +54,9 @@ const styles = StyleSheet.create({
     },
     bgBubble:{
         width:'100%',
-        height:80,
-        borderTopRightRadius:170,
-        borderTopLeftRadius:170,
+        height:90,
+        borderTopRightRadius:200,
+        borderTopLeftRadius:200,
         zIndex:0,
         bottom:0,
         borderBottomRightRadius:25,
