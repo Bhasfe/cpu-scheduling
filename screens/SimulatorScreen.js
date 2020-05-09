@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Alert ,KeyboardAvoidingView, SafeAreaView, Keyboard,TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Alert, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { ALGORITHMS } from '../data/algorithms-data';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import CustomButton from '../components/CustomButton';
@@ -23,14 +23,25 @@ const SimulatorScreen = props => {
         new process('P3'),
     ];
 
-    const resetted = [];
-
     const [processesList, setProcessesList] = useState(InitialProcesses);
     const [chartEnable, setChartEnable] = useState(false);
-    const [quantum,setQuantum] = useState(0);
-  
+    const [quantum, setQuantum] = useState(0);
+    const [quantumRef, setQuantumRef] = useState(0);
+
+
+    const [refInput00, setRefInput00] = useState(0);
+    const [refInput01, setRefInput01] = useState(0);
+    const [refInput10, setRefInput10] = useState(0);
+    const [refInput11, setRefInput11] = useState(0);
+    const [refInput20, setRefInput20] = useState(0);
+    const [refInput21, setRefInput21] = useState(0);
+    const [refInput30, setRefInput30] = useState(0);
+    const [refInput31, setRefInput31] = useState(0);
+    const [refInput40, setRefInput40] = useState(0);
+    const [refInput41, setRefInput41] = useState(0);
+
     const renderProcesses = (itemData) => {
-      
+
         let selectedProcess = processesList.find(item => item.name === itemData.item.name);
         let selectedProcessId = processesList.indexOf(selectedProcess);
 
@@ -41,8 +52,23 @@ const SimulatorScreen = props => {
                 </View>
                 <View style={styles.itemContainer}>
                     <TextInput
-                        editable = {!chartEnable}
-                        placeholder = 'Edit'
+                        //selection = {{start:0,end:0}}
+                        ref={refInputin => {
+                            if (itemData.item.name === 'P0') setRefInput00(refInputin);
+                            else if (itemData.item.name === 'P1') setRefInput10(refInputin);
+                            else if (itemData.item.name === 'P2') setRefInput20(refInputin);
+                            else if (itemData.item.name === 'P3') setRefInput30(refInputin);
+                            else if (itemData.item.name === 'P4') setRefInput40(refInputin);
+                        }}
+                        onSubmitEditing = {()=>{
+                            if (itemData.item.name === 'P0') refInput01.focus();
+                            else if (itemData.item.name === 'P1') refInput11.focus();
+                            else if (itemData.item.name === 'P2') refInput21.focus();
+                            else if (itemData.item.name === 'P3') refInput31.focus();
+                            else if (itemData.item.name === 'P4') refInput41.focus();                           
+                        }}
+                        // editable={!chartEnable}
+                        placeholder='Edit'
                         keyboardType='number-pad'
                         onChangeText={input => {
                             processesList[selectedProcessId].arrivingTime = parseInt(input);
@@ -54,8 +80,22 @@ const SimulatorScreen = props => {
                 </View>
                 <View style={styles.itemContainer}>
                     <TextInput
-                        editable = {!chartEnable}
-                        placeholder = 'Edit'
+                        //selection = {{start:0,end:0}}
+                        ref={refInputin => {
+                            if (itemData.item.name === 'P0') setRefInput01(refInputin);
+                            else if (itemData.item.name === 'P1') setRefInput11(refInputin);
+                            else if (itemData.item.name === 'P2') setRefInput21(refInputin);
+                            else if (itemData.item.name === 'P3') setRefInput31(refInputin);
+                            else if (itemData.item.name === 'P4') setRefInput41(refInputin);
+                        }}
+                        onSubmitEditing = {()=>{
+                            if (itemData.item.name === 'P0' && processesList.length>1) refInput10.focus();
+                            else if (itemData.item.name === 'P1' && processesList.length>2) refInput20.focus();
+                            else if (itemData.item.name === 'P2' && processesList.length>3) refInput30.focus();
+                            else if (itemData.item.name === 'P3' && processesList.length>4) refInput40.focus();                          
+                        }}
+                        // editable={!chartEnable}
+                        placeholder='Edit'
                         keyboardType='number-pad'
                         onChangeText={input => {
                             processesList[selectedProcessId].cpuBurstTime1 = parseInt(input);
@@ -70,72 +110,73 @@ const SimulatorScreen = props => {
     };
 
     return (
-        <View style={styles.redBg}>
-            <SafeAreaView style={styles.screen}>
-                <View style={styles.container}>
-                    <View style={{ ...styles.rows,borderBottomWidth:2, marginBottom: 5 }}>
-                        <View style={styles.itemContainer}>
-                            <Text style={styles.caption}>
-                                Process
-                            </Text>
-                        </View>
-                        <View style={styles.itemContainer}>
-                            <Text style={styles.caption}>
-                                Arriving Time
-                            </Text>
-                        </View>
+        <ScrollView>
+            <View style={styles.redBg}>
+                <View style={styles.screen}>
+                    <View style={styles.container}>
+                        <View style={{ ...styles.rows, borderBottomWidth: 2, marginBottom: 5 }}>
+                            <View style={styles.itemContainer}>
+                                <Text style={styles.caption}>
+                                    Process
+                                </Text>
+                            </View>
+                            <View style={styles.itemContainer}>
+                                <Text style={styles.caption}>
+                                    Arriving Time
+                                </Text>
+                            </View>
 
-                        <View style={styles.itemContainer}>
-                            <Text style={styles.caption}>
-                                Cpu Burst
-                            </Text>
+                            <View style={styles.itemContainer}>
+                                <Text style={styles.caption}>
+                                    Cpu Burst
+                                </Text>
+                            </View>
                         </View>
+                        <KeyboardAvoidingView behavior="padding">
+                            <FlatList
+                                keyExtractor={(item, id) => item.name}
+                                data={processesList}
+                                renderItem={renderProcesses}
+                            />
+
+                            {selectedAlgorithm.shortName === "RR" ?
+                                <View style={styles.quantumContainer}>
+                                    <View style={styles.quantumLabel}>
+                                        <Text>Quantum : </Text>
+                                    </View>
+                                    <View style={styles.quantumInput}>
+                                        <TextInput
+                                            placeholder='Edit'
+                                            ref={input => setQuantumRef(input)}
+                                            keyboardType={'numeric'}
+                                            onChangeText={input => {
+                                                setQuantum(parseInt(input));
+                                            }}
+                                            value={quantum}
+                                        />
+                                    </View>
+                                </View>
+                                : <></>
+
+                            }
+                        </KeyboardAvoidingView>
+
+                        {chartEnable ?
+                            <GanttChart
+                                processesList={processesList}
+                                selectedAlgorithm={selectedAlgorithm}
+                                quantum={quantum}
+                            /> : <></>}
+
                     </View>
-                    <KeyboardAvoidingView behavior="padding">
-                    <FlatList
-                        keyExtractor={(item, id) => item.name}
-                        data={processesList}
-                        renderItem={renderProcesses}
-                    />
-
-                    {selectedAlgorithm.shortName==="RR" ? 
-                        <View style={styles.quantumContainer}>
-                            <View style={styles.quantumLabel}>
-                                <Text>Quantum : </Text>
-                            </View>
-                            <View style={styles.quantumInput}>
-                                <TextInput
-                                    // placeholder='Edit'
-                                    keyboardType={'numeric'}
-                                    onChangeText={input => {
-                                        setQuantum(parseInt(input));
-                                    }}
-                                    value={quantum}
-                                    style={styles.quantumText}
-                                />
-                            </View>
-                        </View>
-                        :<></>
-                        
-                    }
-                    </KeyboardAvoidingView>
-
-                    {chartEnable ?
-                        <GanttChart
-                            processesList={processesList}
-                            selectedAlgorithm = {selectedAlgorithm}
-                            quantum = {quantum}
-                        /> : <></>}
-
-                </View>
 
                     <View style={styles.buttonContainer}>
                         <View style={styles.buttonContainerRow}>
 
                             <CustomButton title='Add Process' onPress={() => {
-                                if(chartEnable){
+                                if (chartEnable) {
                                     Alert.alert("Simulation finished", "You have to reset simulation first !", [{ text: 'OK' }]);
-                                    return(null);
+                                    return (null);
                                 }
                                 if (processesList.length != 0 && parseInt((processesList[processesList.length - 1].name)[1]) + 1 >= MAX_PROCESS) {
                                     Alert.alert("Limit exceeded", "You cannot add more process !", [{ text: 'OK' }]);
@@ -143,14 +184,13 @@ const SimulatorScreen = props => {
                                 }
                                 const newName = processesList.length === 0 ? 'P0' : 'P' + (parseInt((processesList[processesList.length - 1].name)[1]) + 1);
                                 setProcessesList(current => [...current, new process(newName)]);
-                                
                             }} ></CustomButton>
 
 
                             <CustomButton title='Delete Process' onPress={() => {
-                                if(chartEnable){
+                                if (chartEnable) {
                                     Alert.alert("Simulation finished", "You have to reset simulation first !", [{ text: 'OK' }]);
-                                    return(null);
+                                    return (null);
                                 }
                                 if (processesList.length === 0) {
                                     Alert.alert("Table is empty!", "There is no process !", [{ text: 'OK' }]);
@@ -160,101 +200,119 @@ const SimulatorScreen = props => {
                             }} ></CustomButton>
 
                             <CustomButton title='Reset' onPress={() => {
-                                setProcessesList(resetted);
+                                setProcessesList(InitialProcesses);
+                                // Clearing Text Inputs
+                                var L = processesList.length;
+                                while (true) {
+                                    refInput00.clear();
+                                    refInput01.clear();
+                                    if(--L===0) break;
+                                    refInput10.clear();
+                                    refInput11.clear();
+                                    if(--L===0) break;
+                                    refInput20.clear();
+                                    refInput21.clear();
+                                    if(--L===0) break;
+                                    refInput30.clear();
+                                    refInput31.clear();
+                                    if(--L===0) break;
+                                    refInput40.clear();
+                                    refInput41.clear();
+                                }
+                                if(selectedAlgorithm.shortName==='RR'){
+                                    quantumRef.clear();
+                                }
                                 setChartEnable(false);
-                                setQuantum(0);
                             }} ></CustomButton>
 
                         </View>
                         <View>
-                            <CustomButton title="RUN" style={{width:'100%'}} onPress={() => {
+                            <CustomButton title="RUN" style={{ width: '100%' }} onPress={() => {
                                 var inputValidation = true;
-                                for(let i=0;i<processesList.length;i++){
-                                    if(isNaN(processesList[i].arrivingTime)||isNaN(processesList[i].cpuBurstTime1)||processesList[i].cpuBurstTime1===0){
+                                for (let i = 0; i < processesList.length; i++) {
+                                    if (isNaN(processesList[i].arrivingTime) || isNaN(processesList[i].cpuBurstTime1) || processesList[i].cpuBurstTime1 === 0) {
                                         Alert.alert("Invalid values!", "Please check the values !", [{ text: 'OK' }]);
                                         inputValidation = false;
                                         break;
                                     }
                                 }
-                                if(selectedAlgorithm.shortName==='RR' && quantum ===0){
+                                if (selectedAlgorithm.shortName === 'RR' && quantum === 0) {
                                     Alert.alert("Invalid values!", "Quantum cannot be 0 !", [{ text: 'OK' }]);
-                                    inputValidation = false;                            
+                                    inputValidation = false;
                                 }
-                                if(inputValidation){
+                                if (inputValidation) {
                                     setChartEnable(true);
                                 }
                             }} >
                             </CustomButton>
                         </View>
                     </View>
-            </SafeAreaView>
-        </View>
+                </View>
+            </View>
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         alignItems: 'center',
         padding: 15,
-        paddingTop:20,
-        paddingBottom:40,
-        borderTopLeftRadius:40,
-        borderTopRightRadius:40,
-        backgroundColor:Colors.screen
+        borderTopLeftRadius: 40,
+        borderTopRightRadius: 40,
+        backgroundColor: Colors.screen
     },
-    redBg:{
+    redBg: {
         backgroundColor: Colors.red,
-        flex:1
+        flex: 1
     },
     container: {
         width: '100%',
-        marginVertical : 10,
+        marginVertical: 10,
+        backgroundColor: Colors.screen
     },
     rows: {
         // flex : 1,
         flexDirection: 'row',
         borderColor: Colors.borderColorSimulator,
-        borderBottomWidth:1,
-        borderRadius:20,
+        borderBottomWidth: 1,
+        borderRadius: 20,
         marginVertical: 0.3,
-        height : 35,
+        height: 35,
     },
     itemContainer: {
         flex: 1,
         alignItems: 'center',
-        justifyContent:'center'
+        justifyContent: 'center'
     },
     buttonContainer: {
-      justifyContent: 'center',
-      paddingBottom : 15
+        justifyContent: 'center',
+        paddingBottom: 15
     },
     buttonContainerRow: {
         flexDirection: 'row',
-        marginBottom : 10
+        marginBottom: 10
     },
     caption: {
         fontFamily: 'open-sans-bold',
     },
-    quantumContainer : {
-        marginVertical : 10,
-        flexDirection : 'row',
-        justifyContent : 'center',
-        alignItems : 'center',
+    quantumContainer: {
+        marginVertical: 10,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-    quantumInput : {
-        borderBottomColor : Colors.red,
-        borderBottomWidth : 0.5,
-        width : '10%'
-    }
-    ,quantumText:{
-        flex:1
+    quantumInput: {
+        borderBottomColor: 'black',
+        borderBottomWidth: 0.5,
+    }, quantumLabel: {
+
     },
-    input : {
-        flex:1,
-        width:'100%',
-        textAlign:'center'
+    input: {
+        flex: 1,
+        width: '100%',
+        textAlign: 'center'
     }
 });
 
