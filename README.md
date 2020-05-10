@@ -6,7 +6,7 @@ This application has been developed to simulate the *CPU scheduling algorithms* 
 
 **The Algorithms**: 
 
-* First Come First Server (Non Preemptive)<br>
+* First Come First Serve (Non Preemptive)<br>
 * Shortest Job First (Non Preemptive)<br>
 * Shortest Remaining Time First (Preemptive)<br>
 * Round Robin (Preemptive)<br>
