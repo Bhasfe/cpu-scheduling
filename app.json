@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "cpu-scheduling",
+    "name": "CPU Simulator",
     "slug": "cpu-scheduling",
+    "privacy" : "public",
     "platforms": [
       "ios",
       "android",
@@ -9,11 +10,11 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#DE3727"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
