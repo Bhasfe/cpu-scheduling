@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Alert, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Alert, KeyboardAvoidingView, ActivityIndicator} from 'react-native';
 import { ALGORITHMS } from '../data/algorithms-data';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import CustomButton from '../components/CustomButton';
@@ -27,6 +27,7 @@ const SimulatorScreen = props => {
     const [chartEnable, setChartEnable] = useState(false);
     const [quantum, setQuantum] = useState(0);
     const [quantumRef, setQuantumRef] = useState(0);
+    const [loading,setLoading] = useState(false);
 
 
     const [refInput00, setRefInput00] = useState(0);
@@ -52,7 +53,6 @@ const SimulatorScreen = props => {
                 </View>
                 <View style={styles.itemContainer}>
                     <TextInput
-                        //selection = {{start:0,end:0}}
                         ref={refInputin => {
                             if (itemData.item.name === 'P0') setRefInput00(refInputin);
                             else if (itemData.item.name === 'P1') setRefInput10(refInputin);
@@ -67,7 +67,7 @@ const SimulatorScreen = props => {
                             else if (itemData.item.name === 'P3') refInput31.focus();
                             else if (itemData.item.name === 'P4') refInput41.focus();                           
                         }}
-                        // editable={!chartEnable}
+                        editable={!chartEnable}
                         placeholder='Edit'
                         keyboardType='number-pad'
                         onChangeText={input => {
@@ -80,7 +80,6 @@ const SimulatorScreen = props => {
                 </View>
                 <View style={styles.itemContainer}>
                     <TextInput
-                        //selection = {{start:0,end:0}}
                         ref={refInputin => {
                             if (itemData.item.name === 'P0') setRefInput01(refInputin);
                             else if (itemData.item.name === 'P1') setRefInput11(refInputin);
@@ -94,7 +93,7 @@ const SimulatorScreen = props => {
                             else if (itemData.item.name === 'P2' && processesList.length>3) refInput30.focus();
                             else if (itemData.item.name === 'P3' && processesList.length>4) refInput40.focus();                          
                         }}
-                        // editable={!chartEnable}
+                        editable={!chartEnable}
                         placeholder='Edit'
                         keyboardType='number-pad'
                         onChangeText={input => {
@@ -110,7 +109,7 @@ const SimulatorScreen = props => {
     };
 
     return (
-        <ScrollView>
+        <ScrollView style={{flex:1,backgroundColor:Colors.screen}}>
             <View style={styles.redBg}>
                 <View style={styles.screen}>
                     <View style={styles.container}>
@@ -138,7 +137,6 @@ const SimulatorScreen = props => {
                                 data={processesList}
                                 renderItem={renderProcesses}
                             />
-
                             {selectedAlgorithm.shortName === "RR" ?
                                 <View style={styles.quantumContainer}>
                                     <View style={styles.quantumLabel}>
@@ -146,6 +144,7 @@ const SimulatorScreen = props => {
                                     </View>
                                     <View style={styles.quantumInput}>
                                         <TextInput
+                                            editable={!chartEnable}
                                             placeholder='Edit'
                                             ref={input => setQuantumRef(input)}
                                             keyboardType={'numeric'}
@@ -160,6 +159,12 @@ const SimulatorScreen = props => {
 
                             }
                         </KeyboardAvoidingView>
+
+                        {loading ? 
+                            <View style={{flex:1,marginTop: 20}}>
+                                <ActivityIndicator size="large" color={Colors.backgroundColor} />
+                            </View>: <></>
+                        }
 
                         {chartEnable ?
                             <GanttChart
@@ -228,6 +233,10 @@ const SimulatorScreen = props => {
                         </View>
                         <View>
                             <CustomButton title="RUN" style={{ width: '100%' }} onPress={() => {
+                                if (chartEnable) {
+                                    Alert.alert("Simulation finished", "You have to reset simulation first !", [{ text: 'OK' }]);
+                                    return (null);
+                                }else{                               
                                 var inputValidation = true;
                                 for (let i = 0; i < processesList.length; i++) {
                                     if (isNaN(processesList[i].arrivingTime) || isNaN(processesList[i].cpuBurstTime1) || processesList[i].cpuBurstTime1 === 0) {
@@ -241,9 +250,13 @@ const SimulatorScreen = props => {
                                     inputValidation = false;
                                 }
                                 if (inputValidation) {
-                                    setChartEnable(true);
+                                    setLoading(true);
+                                    setTimeout(()=>{
+                                        setLoading(false);
+                                        setChartEnable(true);
+                                    },1500)
                                 }
-                            }} >
+                            }}}  >
                             </CustomButton>
                         </View>
                     </View>
@@ -256,7 +269,7 @@ const SimulatorScreen = props => {
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         padding: 15,
         borderTopLeftRadius: 40,
@@ -273,7 +286,6 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.screen
     },
     rows: {
-        // flex : 1,
         flexDirection: 'row',
         borderColor: Colors.borderColorSimulator,
         borderBottomWidth: 1,
