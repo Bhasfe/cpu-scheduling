@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 
 import { ALGORITHMS } from '../data/algorithms-data';
 import AlgorithmsList from '../components/AlgorithmsList';
@@ -41,7 +41,7 @@ const AlgorithmsScreen = props => {
 
 AlgorithmsScreen.navigationOptions = navigationData => {
     return ({
-        headerShown : true
+        headerShown : true,
     })
 }
 
