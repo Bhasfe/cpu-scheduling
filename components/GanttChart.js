@@ -36,10 +36,10 @@ const renderCalculations = (itemData) => {
         return (
             <View style={styles.calculations}>
                 <View>
-                    <Text style={{ color: Color.red}}>wat({itemData.item.name}) = {itemData.item.wat}</Text>
+                    <Text style={styles.calculationsText}>wat({itemData.item.name}) = {itemData.item.wat}</Text>
                 </View>
                 <View>
-                    <Text style={{ color: Color.red}}>tat({itemData.item.name}) = {itemData.item.tat}</Text>
+                    <Text style={styles.calculationsText}>tat({itemData.item.name}) = {itemData.item.tat}</Text>
                 </View>
             </View>
         );
@@ -107,10 +107,10 @@ const GanttChart = props => {
                 </View>
             </ScrollView>
             <View style={{ alignItems: 'center', marginVertical: 10 }}>
-                <Text style={{color: Color.backgroundColor}}>Average waiting time = {averageWait}</Text>
+                <Text style={{color: Color.backgroundColor}}>Average waiting time = {averageWait.toFixed(2)}</Text>
             </View>
             <View style={{ alignItems: 'center', marginVertical: 10 }}>
-                <Text style={{color: Color.backgroundColor}}>CPU Utilization = %{cpuUtilization}</Text>
+                <Text style={{color: Color.backgroundColor}}>CPU Utilization = %{cpuUtilization.toFixed(2)}</Text>
             </View>
         </View>
     );
@@ -133,7 +133,6 @@ const styles = StyleSheet.create({
     tag: {
         minWidth : 35,
         fontSize: 4,
-        // paddingLeft: 10,
     },
     calculations: {
         flex: 1,
@@ -143,7 +142,12 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         paddingTop:10,
         paddingBottom:10,
+        marginTop : 6,
         marginLeft: 10,
+    },
+    calculationsText : {
+        color: Color.red,
+        fontSize : 11,
     }
 
 });
