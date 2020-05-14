@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Alert, KeyboardAvoidingView, ActivityIndicator} from 'react-native';
+import { View, Text, StyleSheet, TextInput, Alert, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
 import { ALGORITHMS } from '../data/algorithms-data';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import CustomButton from '../components/CustomButton';
@@ -27,7 +27,7 @@ const SimulatorScreen = props => {
     const [chartEnable, setChartEnable] = useState(false);
     const [quantum, setQuantum] = useState(0);
     const [quantumRef, setQuantumRef] = useState(0);
-    const [loading,setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
 
     const [refInput00, setRefInput00] = useState(0);
@@ -60,12 +60,12 @@ const SimulatorScreen = props => {
                             else if (itemData.item.name === 'P3') setRefInput30(refInputin);
                             else if (itemData.item.name === 'P4') setRefInput40(refInputin);
                         }}
-                        onSubmitEditing = {()=>{
+                        onSubmitEditing={() => {
                             if (itemData.item.name === 'P0') refInput01.focus();
                             else if (itemData.item.name === 'P1') refInput11.focus();
                             else if (itemData.item.name === 'P2') refInput21.focus();
                             else if (itemData.item.name === 'P3') refInput31.focus();
-                            else if (itemData.item.name === 'P4') refInput41.focus();                           
+                            else if (itemData.item.name === 'P4') refInput41.focus();
                         }}
                         editable={!chartEnable}
                         placeholder='Edit'
@@ -87,11 +87,11 @@ const SimulatorScreen = props => {
                             else if (itemData.item.name === 'P3') setRefInput31(refInputin);
                             else if (itemData.item.name === 'P4') setRefInput41(refInputin);
                         }}
-                        onSubmitEditing = {()=>{
-                            if (itemData.item.name === 'P0' && processesList.length>1) refInput10.focus();
-                            else if (itemData.item.name === 'P1' && processesList.length>2) refInput20.focus();
-                            else if (itemData.item.name === 'P2' && processesList.length>3) refInput30.focus();
-                            else if (itemData.item.name === 'P3' && processesList.length>4) refInput40.focus();                          
+                        onSubmitEditing={() => {
+                            if (itemData.item.name === 'P0' && processesList.length > 1) refInput10.focus();
+                            else if (itemData.item.name === 'P1' && processesList.length > 2) refInput20.focus();
+                            else if (itemData.item.name === 'P2' && processesList.length > 3) refInput30.focus();
+                            else if (itemData.item.name === 'P3' && processesList.length > 4) refInput40.focus();
                         }}
                         editable={!chartEnable}
                         placeholder='Edit'
@@ -109,7 +109,7 @@ const SimulatorScreen = props => {
     };
 
     return (
-        <ScrollView style={{flex:1,backgroundColor:Colors.screen}}>
+        <ScrollView style={{ flex: 1, backgroundColor: Colors.screen }}>
             <View style={styles.redBg}>
                 <View style={styles.screen}>
                     <View style={styles.container}>
@@ -160,10 +160,10 @@ const SimulatorScreen = props => {
                             }
                         </KeyboardAvoidingView>
 
-                        {loading ? 
-                            <View style={{flex:1,marginTop: 20}}>
+                        {loading ?
+                            <View style={{ flex: 1, marginTop: 20 }}>
                                 <ActivityIndicator size="large" color={Colors.backgroundColor} />
-                            </View>: <></>
+                            </View> : <></>
                         }
 
                         {chartEnable ?
@@ -211,20 +211,20 @@ const SimulatorScreen = props => {
                                 while (true) {
                                     refInput00.clear();
                                     refInput01.clear();
-                                    if(--L===0) break;
+                                    if (--L === 0) break;
                                     refInput10.clear();
                                     refInput11.clear();
-                                    if(--L===0) break;
+                                    if (--L === 0) break;
                                     refInput20.clear();
                                     refInput21.clear();
-                                    if(--L===0) break;
+                                    if (--L === 0) break;
                                     refInput30.clear();
                                     refInput31.clear();
-                                    if(--L===0) break;
+                                    if (--L === 0) break;
                                     refInput40.clear();
                                     refInput41.clear();
                                 }
-                                if(selectedAlgorithm.shortName==='RR'){
+                                if (selectedAlgorithm.shortName === 'RR') {
                                     quantumRef.clear();
                                 }
                                 setChartEnable(false);
@@ -236,27 +236,34 @@ const SimulatorScreen = props => {
                                 if (chartEnable) {
                                     Alert.alert("Simulation finished", "You have to reset simulation first !", [{ text: 'OK' }]);
                                     return (null);
-                                }else{                               
-                                var inputValidation = true;
-                                for (let i = 0; i < processesList.length; i++) {
-                                    if (isNaN(processesList[i].arrivingTime) || isNaN(processesList[i].cpuBurstTime1) || processesList[i].cpuBurstTime1 === 0) {
-                                        Alert.alert("Invalid values!", "Please check the values !", [{ text: 'OK' }]);
+                                } else {
+                                    var inputValidation = true;
+                                    if (processesList.length === 0) {
                                         inputValidation = false;
-                                        break;
+                                        Alert.alert("Empty List", "There is no process !", [{ text: 'OK' }]);
+                                        return (null);
+                                    } else {
+                                        for (let i = 0; i < processesList.length; i++) {
+                                            if (isNaN(processesList[i].arrivingTime) || isNaN(processesList[i].cpuBurstTime1) || processesList[i].cpuBurstTime1 === 0) {
+                                                Alert.alert("Invalid values!", "Please check the values !", [{ text: 'OK' }]);
+                                                inputValidation = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (selectedAlgorithm.shortName === 'RR' && quantum === 0) {
+                                        Alert.alert("Invalid values!", "Quantum cannot be 0 !", [{ text: 'OK' }]);
+                                        inputValidation = false;
+                                    }
+                                    if (inputValidation) {
+                                        setLoading(true);
+                                        setTimeout(() => {
+                                            setLoading(false);
+                                            setChartEnable(true);
+                                        }, 1500)
                                     }
                                 }
-                                if (selectedAlgorithm.shortName === 'RR' && quantum === 0) {
-                                    Alert.alert("Invalid values!", "Quantum cannot be 0 !", [{ text: 'OK' }]);
-                                    inputValidation = false;
-                                }
-                                if (inputValidation) {
-                                    setLoading(true);
-                                    setTimeout(()=>{
-                                        setLoading(false);
-                                        setChartEnable(true);
-                                    },1500)
-                                }
-                            }}}  >
+                            }}  >
                             </CustomButton>
                         </View>
                     </View>
@@ -324,7 +331,8 @@ const styles = StyleSheet.create({
     input: {
         flex: 1,
         width: '100%',
-        textAlign: 'center'
+        textAlign: 'left',
+        marginLeft: 85
     }
 });
 
