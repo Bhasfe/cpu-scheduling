@@ -53,6 +53,7 @@ const SimulatorScreen = props => {
                 </View>
                 <View style={styles.itemContainer}>
                     <TextInput
+                        returnKeyType = 'next'
                         ref={refInputin => {
                             if (itemData.item.name === 'P0') setRefInput00(refInputin);
                             else if (itemData.item.name === 'P1') setRefInput10(refInputin);
@@ -80,6 +81,7 @@ const SimulatorScreen = props => {
                 </View>
                 <View style={styles.itemContainer}>
                     <TextInput
+                        returnKeyType = 'next'
                         ref={refInputin => {
                             if (itemData.item.name === 'P0') setRefInput01(refInputin);
                             else if (itemData.item.name === 'P1') setRefInput11(refInputin);
