@@ -190,6 +190,35 @@ const SimulatorScreen = props => {
             <View style={styles.redBg}>
                 <View style={styles.screen}>
                     <View style={styles.container}>
+                        {chartEnable ? <></>:
+                            <View style={styles.IOchoiceContainer}>
+                                <View style={styles.IOContainer}>
+                                    <Text style={styles.IOchoiceLabel}>I/O Device: </Text>
+                                    <Switch 
+                                        //trackColor={{ true: Colors.primaryColor }}
+                                        //thumbColor=
+                                        style={styles.Switch}
+                                        disabled = {chartEnable? true:false}
+                                        value={IOdevice}
+                                        onValueChange={value => setIOdevice(value)}
+                                    />
+                                </View>
+                                <View style={styles.IOContainer}>
+                                    <Text style={styles.IOchoiceLabel}>I/O Algorithm: </Text>
+                                    <Picker
+                                        enabled = {IOdevice}
+                                        selectedValue={selectedIO}
+                                        style={styles.IOalgorithmPicker}
+                                        onValueChange={ value => setSelectedIO(value)}
+                                        //mode="dropdown"
+                                    >
+                                        <Picker.Item label="FCFS" value="FCFS" />
+                                        <Picker.Item label="SRTF" value="SRTF" />
+                                        <Picker.Item label="SJF" value="SJF" />
+                                        <Picker.Item label="RR" value="RR" />
+                                    </Picker>
+                                </View>
+                            </View>}
                         <View style={{ ...styles.rows, borderBottomWidth: 2, marginBottom: 5 }}>
                             <View style={styles.itemContainer}>
                                 <Text style={styles.caption}>
@@ -294,30 +323,6 @@ const SimulatorScreen = props => {
                     </View>
 
                     <View style={styles.buttonContainer}>
-                        {chartEnable ? <></>:
-                        <View style={styles.IOchoiceContainer}>
-                            <Text style={styles.IOchoiceLabel}>I/O Device: </Text>
-                            <Switch 
-                                //trackColor={{ true: Colors.primaryColor }}
-                                //thumbColor=
-                                disabled = {chartEnable? true:false}
-                                value={IOdevice}
-                                onValueChange={value => setIOdevice(value)}
-                            />
-                            <Text style={styles.IOchoiceLabel}>I/O Algorithm: </Text>
-                            <Picker
-                                enabled = {IOdevice}
-                                selectedValue={selectedIO}
-                                style={styles.IOalgorithmPicker}
-                                onValueChange={ value => setSelectedIO(value)}
-                                //mode="dropdown"
-                            >
-                                <Picker.Item label="FCFS" value="FCFS" />
-                                <Picker.Item label="SRTF" value="SRTF" />
-                                <Picker.Item label="SJF" value="SJF" />
-                                <Picker.Item label="RR" value="RR" />
-                            </Picker>
-                        </View>}
                         <View style={styles.buttonContainerRow}>
                             <CustomButton title='Add Process' onPress={() => {
                                 if (chartEnable) {
@@ -505,18 +510,27 @@ const styles = StyleSheet.create({
     input: {
         flex: 1,
         width: '100%',
-        textAlign: 'left',
-        marginLeft: 85
+        textAlign: 'center',
     },
     IOchoiceContainer : {
-        flexDirection: 'row'
+        flexDirection: 'row',
     },
     IOchoiceLabel :{
-        fontFamily : 'open-sans'
+        fontFamily : 'open-sans',
+        textAlignVertical:'center',
+        fontWeight:'bold'
     },
     IOalgorithmPicker : {
         flex : 1,
         alignItems: 'center'
+    },
+    IOContainer: {
+        width: '50%',
+        paddingLeft:10,
+        paddingRight:10
+    },
+    Switch: {
+        alignSelf:'flex-start'
     }
 });
 
