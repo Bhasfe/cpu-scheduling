@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Alert, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Alert, KeyboardAvoidingView, ActivityIndicator , Switch , Picker } from 'react-native';
 import { ALGORITHMS } from '../data/algorithms-data';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import CustomButton from '../components/CustomButton';
@@ -17,19 +17,23 @@ const SimulatorScreen = props => {
     const selectedAlgorithm = ALGORITHMS.find(item => item.id === algorithmId);
 
     const InitialProcesses = [
-        new process('P0'),
-        new process('P1'),
-        new process('P2'),
-        new process('P3'),
+        new process('P0',0,0,0,0,0,0,0,0),
+        new process('P1',0,0,0,0,0,0,0,0),
+        new process('P2',0,0,0,0,0,0,0,0),
+        new process('P3',0,0,0,0,0,0,0,0),
     ];
 
     const [processesList, setProcessesList] = useState(InitialProcesses);
     const [chartEnable, setChartEnable] = useState(false);
     const [quantum, setQuantum] = useState(0);
     const [quantumRef, setQuantumRef] = useState(0);
+    const [quantumIO, setQuantumIO] = useState(0);
+    const [quantumIORef, setQuantumIORef] = useState(0);
     const [loading, setLoading] = useState(false);
+    const [IOdevice,setIOdevice] = useState(false)
+    const [selectedIO,setSelectedIO] = useState("FCFS")
 
-
+    // Input References
     const [refInput00, setRefInput00] = useState(0);
     const [refInput01, setRefInput01] = useState(0);
     const [refInput10, setRefInput10] = useState(0);
@@ -40,6 +44,17 @@ const SimulatorScreen = props => {
     const [refInput31, setRefInput31] = useState(0);
     const [refInput40, setRefInput40] = useState(0);
     const [refInput41, setRefInput41] = useState(0);
+    
+    const [IOrefInput00, setIORefInput00] = useState(0);
+    const [IOrefInput01, setIORefInput01] = useState(0);
+    const [IOrefInput10, setIORefInput10] = useState(0);
+    const [IOrefInput11, setIORefInput11] = useState(0);
+    const [IOrefInput20, setIORefInput20] = useState(0);
+    const [IOrefInput21, setIORefInput21] = useState(0);
+    const [IOrefInput30, setIORefInput30] = useState(0);
+    const [IOrefInput31, setIORefInput31] = useState(0);
+    const [IOrefInput40, setIORefInput40] = useState(0);
+    const [IOrefInput41, setIORefInput41] = useState(0);
 
     const renderProcesses = (itemData) => {
 
@@ -106,6 +121,66 @@ const SimulatorScreen = props => {
                         style={styles.input}
                     />
                 </View>
+                {IOdevice ? 
+                    <View style={styles.itemContainer}>
+                        <TextInput
+                            returnKeyType = 'next'
+                            ref={refInputin => {
+                                if (itemData.item.name === 'P0') setIORefInput00(refInputin);
+                                else if (itemData.item.name === 'P1') setIORefInput10(refInputin);
+                                else if (itemData.item.name === 'P2') setIORefInput20(refInputin);
+                                else if (itemData.item.name === 'P3') setIORefInput30(refInputin);
+                                else if (itemData.item.name === 'P4') setIORefInput40(refInputin);
+                            }}
+                            onSubmitEditing={() => {
+                                if (itemData.item.name === 'P0') IOrefInput01.focus();
+                                else if (itemData.item.name === 'P1') IOrefInput11.focus();
+                                else if (itemData.item.name === 'P2') IOrefInput21.focus();
+                                else if (itemData.item.name === 'P3') IOrefInput31.focus();
+                                else if (itemData.item.name === 'P4') IOrefInput41.focus();
+                            }}
+                            editable={!chartEnable}
+                            placeholder='Edit'
+                            keyboardType='number-pad'
+                            onChangeText={input => {
+                                processesList[selectedProcessId].IOBurstTime = parseInt(input);
+                                setProcessesList(processesList);
+                            }}
+                            value={processesList[selectedProcessId].IOBurstTime}
+                            style={styles.input}
+                        />
+                    </View>:<></>
+                    }
+
+                {IOdevice ? 
+                    <View style={styles.itemContainer}>
+                        <TextInput
+                            returnKeyType = 'next'
+                            ref={refInputin => {
+                                if (itemData.item.name === 'P0') setIORefInput01(refInputin);
+                                else if (itemData.item.name === 'P1') setIORefInput11(refInputin);
+                                else if (itemData.item.name === 'P2') setIORefInput21(refInputin);
+                                else if (itemData.item.name === 'P3') setIORefInput31(refInputin);
+                                else if (itemData.item.name === 'P4') setIORefInput41(refInputin);
+                            }}
+                            onSubmitEditing={() => {
+                                if (itemData.item.name === 'P0' && processesList.length > 1) IOrefInput10.focus();
+                                else if (itemData.item.name === 'P1' && processesList.length > 2) IOrefInput20.focus();
+                                else if (itemData.item.name === 'P2' && processesList.length > 3) IOrefInput30.focus();
+                                else if (itemData.item.name === 'P3' && processesList.length > 4) IOrefInput40.focus();
+                            }}
+                            editable={!chartEnable}
+                            placeholder='Edit'
+                            keyboardType='number-pad'
+                            onChangeText={input => {
+                                processesList[selectedProcessId].cpuBurstTime2 = parseInt(input);
+                                setProcessesList(processesList);
+                            }}
+                            value={processesList[selectedProcessId].cpuBurstTime2}
+                            style={styles.input}
+                        />
+                    </View>:<></>
+                    }
             </View>
         );
     };
@@ -123,15 +198,33 @@ const SimulatorScreen = props => {
                             </View>
                             <View style={styles.itemContainer}>
                                 <Text style={styles.caption}>
-                                    Arriving Time
+                                    {IOdevice ? "Arrive" : "Arriving Time" }
                                 </Text>
                             </View>
 
                             <View style={styles.itemContainer}>
                                 <Text style={styles.caption}>
-                                    Cpu Burst
+                                    {IOdevice ? "Cpu" : "Cpu Burst" }
                                 </Text>
                             </View>
+
+                            {IOdevice ?
+                            <View style={styles.itemContainer}>
+                                <Text style={styles.caption}>
+                                    I/O
+                                </Text>
+                            </View>
+                            :<></>
+                            }
+                            {IOdevice ?
+                            <View style={styles.itemContainer}>
+                                <Text style={styles.caption}>
+                                    Cpu
+                                </Text>
+                            </View>
+                            :<></>
+                            }
+
                         </View>
                         <KeyboardAvoidingView behavior="padding">
                             <FlatList
@@ -140,22 +233,42 @@ const SimulatorScreen = props => {
                                 renderItem={renderProcesses}
                             />
                             {selectedAlgorithm.shortName === "RR" ?
-                                <View style={styles.quantumContainer}>
-                                    <View style={styles.quantumLabel}>
-                                        <Text>Quantum : </Text>
+                                <View style={styles.quantumMain}>
+                                    <View style={styles.quantumContainer}>
+                                        <View style={styles.quantumLabel}>
+                                            <Text>Quantum : </Text>
+                                        </View>
+                                        <View style={styles.quantumInput}>
+                                            <TextInput
+                                                editable={!chartEnable}
+                                                placeholder='Edit'
+                                                ref={input => setQuantumRef(input)}
+                                                keyboardType={'numeric'}
+                                                onChangeText={input => {
+                                                    setQuantum(parseInt(input));
+                                                }}
+                                                value={quantum}
+                                            />
+                                        </View>
                                     </View>
-                                    <View style={styles.quantumInput}>
-                                        <TextInput
-                                            editable={!chartEnable}
-                                            placeholder='Edit'
-                                            ref={input => setQuantumRef(input)}
-                                            keyboardType={'numeric'}
-                                            onChangeText={input => {
-                                                setQuantum(parseInt(input));
-                                            }}
-                                            value={quantum}
-                                        />
-                                    </View>
+                                    {selectedIO==="RR" ? 
+                                        <View style={styles.quantumContainer}>
+                                            <View style={styles.quantumLabel}>
+                                                <Text>I/O Quantum : </Text>
+                                            </View>
+                                            <View style={styles.quantumInput}>
+                                                <TextInput
+                                                    editable={!chartEnable}
+                                                    placeholder='Edit'
+                                                    ref={input => setQuantumIORef(input)}
+                                                    keyboardType={'numeric'}
+                                                    onChangeText={input => {
+                                                        setQuantumIO(parseInt(input));
+                                                    }}
+                                                    value={quantumIO}
+                                                />
+                                            </View>
+                                        </View>:<></>}
                                 </View>
                                 : <></>
 
@@ -173,13 +286,39 @@ const SimulatorScreen = props => {
                                 processesList={processesList}
                                 selectedAlgorithm={selectedAlgorithm}
                                 quantum={quantum}
+                                selectedIO = {selectedIO}
+                                IOdevice = {IOdevice}
+                                quantumIO = {quantumIO}
                             /> : <></>}
 
                     </View>
 
                     <View style={styles.buttonContainer}>
+                        {chartEnable ? <></>:
+                        <View style={styles.IOchoiceContainer}>
+                            <Text style={styles.IOchoiceLabel}>I/O Device: </Text>
+                            <Switch 
+                                //trackColor={{ true: Colors.primaryColor }}
+                                //thumbColor=
+                                disabled = {chartEnable? true:false}
+                                value={IOdevice}
+                                onValueChange={value => setIOdevice(value)}
+                            />
+                            <Text style={styles.IOchoiceLabel}>I/O Algorithm: </Text>
+                            <Picker
+                                enabled = {IOdevice}
+                                selectedValue={selectedIO}
+                                style={styles.IOalgorithmPicker}
+                                onValueChange={ value => setSelectedIO(value)}
+                                //mode="dropdown"
+                            >
+                                <Picker.Item label="FCFS" value="FCFS" />
+                                <Picker.Item label="SRTF" value="SRTF" />
+                                <Picker.Item label="SJF" value="SJF" />
+                                <Picker.Item label="RR" value="RR" />
+                            </Picker>
+                        </View>}
                         <View style={styles.buttonContainerRow}>
-
                             <CustomButton title='Add Process' onPress={() => {
                                 if (chartEnable) {
                                     Alert.alert("Simulation finished", "You have to reset simulation first !", [{ text: 'OK' }]);
@@ -210,24 +349,47 @@ const SimulatorScreen = props => {
                                 setProcessesList(InitialProcesses);
                                 // Clearing Text Inputs
                                 var L = processesList.length;
-                                while (true) {
+                                while (L) {
                                     refInput00.clear();
                                     refInput01.clear();
+                                    if(IOdevice){
+                                        IOrefInput00.clear();
+                                        IOrefInput01.clear();                                        
+                                    }
                                     if (--L === 0) break;
                                     refInput10.clear();
                                     refInput11.clear();
+                                    if(IOdevice){
+                                        IOrefInput10.clear();
+                                        IOrefInput11.clear();                                        
+                                    }
                                     if (--L === 0) break;
                                     refInput20.clear();
                                     refInput21.clear();
+                                    if(IOdevice){
+                                        IOrefInput20.clear();
+                                        IOrefInput21.clear();                                        
+                                    }
                                     if (--L === 0) break;
                                     refInput30.clear();
                                     refInput31.clear();
+                                    if(IOdevice){
+                                        IOrefInput30.clear();
+                                        IOrefInput31.clear();                                        
+                                    }
                                     if (--L === 0) break;
                                     refInput40.clear();
                                     refInput41.clear();
+                                    if(IOdevice){
+                                        IOrefInput40.clear();
+                                        IOrefInput41.clear();                                        
+                                    }
                                 }
                                 if (selectedAlgorithm.shortName === 'RR') {
                                     quantumRef.clear();
+                                }
+                                if (selectedIO === 'RR') {
+                                    quantumIORef.clear();
                                 }
                                 setChartEnable(false);
                             }} ></CustomButton>
@@ -246,7 +408,7 @@ const SimulatorScreen = props => {
                                         return (null);
                                     } else {
                                         for (let i = 0; i < processesList.length; i++) {
-                                            if (isNaN(processesList[i].arrivingTime) || isNaN(processesList[i].cpuBurstTime1) || processesList[i].cpuBurstTime1 === 0) {
+                                            if (isNaN(processesList[i].arrivingTime) || isNaN(processesList[i].cpuBurstTime1) || isNaN(processesList[i].IOBurstTime) || isNaN(processesList[i].cpuBurstTime2) ||  processesList[i].cpuBurstTime1 === 0) {
                                                 Alert.alert("Invalid values!", "Please check the values !", [{ text: 'OK' }]);
                                                 inputValidation = false;
                                                 break;
@@ -254,6 +416,10 @@ const SimulatorScreen = props => {
                                         }
                                     }
                                     if (selectedAlgorithm.shortName === 'RR' && quantum === 0) {
+                                        Alert.alert("Invalid values!", "Quantum cannot be 0 !", [{ text: 'OK' }]);
+                                        inputValidation = false;
+                                    }
+                                    if ( IOdevice && (selectedIO === 'RR') && quantumIO === 0) {
                                         Alert.alert("Invalid values!", "Quantum cannot be 0 !", [{ text: 'OK' }]);
                                         inputValidation = false;
                                     }
@@ -318,6 +484,12 @@ const styles = StyleSheet.create({
     caption: {
         fontFamily: 'open-sans-bold',
     },
+    quantumMain : {
+        marginVertical: 10,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',     
+    },
     quantumContainer: {
         marginVertical: 10,
         flexDirection: 'row',
@@ -335,6 +507,16 @@ const styles = StyleSheet.create({
         width: '100%',
         textAlign: 'left',
         marginLeft: 85
+    },
+    IOchoiceContainer : {
+        flexDirection: 'row'
+    },
+    IOchoiceLabel :{
+        fontFamily : 'open-sans'
+    },
+    IOalgorithmPicker : {
+        flex : 1,
+        alignItems: 'center'
     }
 });
 
