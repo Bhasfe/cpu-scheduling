@@ -9,10 +9,12 @@ class process {
      * @param {number} cpuBurstTime2
      * @param {number} start
      * @param {number} finish
-     * 
+     * @param {number} wat
+     * @param {number} tat
+     *  
      */
     
-    constructor(name,arrivingTime,cpuBurstTime1,IOBurstTime,cpuBurstTime2,start,finish,wat,tat){
+    constructor(name,arrivingTime,cpuBurstTime1 = 0,IOBurstTime = 0,cpuBurstTime2 = 0,start,finish,wat,tat){
         this.name = name
         this.arrivingTime = arrivingTime,
         this.cpuBurstTime1 = cpuBurstTime1;
