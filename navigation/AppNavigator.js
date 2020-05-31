@@ -1,7 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
-import { createAppContainer,StatusBar } from 'react-navigation';
-import { Image } from 'react-native';
+import { createAppContainer } from 'react-navigation';
 import AlgorithmScreen from '../screens/AlgorithmsScreen';
 import SimulatorScreen from '../screens/SimulatorScreen';
 import { ActionBarImage } from '../components/ActionBarImage';
