@@ -195,8 +195,9 @@ const SimulatorScreen = props => {
                                 <View style={styles.IOContainer}>
                                     <Text style={styles.IOchoiceLabel}>I/O Device: </Text>
                                     <Switch 
-                                        //trackColor={{ true: Colors.primaryColor }}
-                                        //thumbColor=
+                                        trackColor={{ true: Colors.primaryColor }}
+                                        ios_backgroundColor={{ true: Colors.primaryColor }}
+                                        thumbColor={Colors.red}
                                         style={styles.Switch}
                                         disabled = {chartEnable? true:false}
                                         value={IOdevice}
@@ -530,7 +531,7 @@ const styles = StyleSheet.create({
         paddingRight:10
     },
     Switch: {
-        alignSelf:'flex-start'
+        alignSelf:'flex-start',
     }
 });
 
