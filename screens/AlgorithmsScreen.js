@@ -23,7 +23,7 @@ const AlgorithmsScreen = props => {
            <View style={styles.screen}>
             <View style={styles.description}>
                 <Text style={{color: Colors.light}}>What it is exactly? Briefly, it helps you to understand how cpu scheduling works, end of the story.</Text>
-                <Text style={{color: Colors.light}}>You may start with selecting an algorithm.</Text>
+                <Text style={{color: Colors.light}}>You may start with selecting an algorithm for CPU.</Text>
             </View>
             <View style={styles.flatContainer}>
                 <FlatList
