@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, ScrollView, Dimensions } from 'react-native';
-import { SJF, FCFS, SRTF, RR } from '../data/functions';
+import { SJF, FCFS, SRTF, RR , PSP, PSNP } from '../data/functions';
 import Process from '../models/process'
 
 import Color from '../constants/Colors'
@@ -60,6 +60,7 @@ const GanttChart = props => {
     var IOdevice = props.IOdevice;
     var quantumIO = props.quantumIO;
     var quantum = props.quantum;
+    var selectedPriority = props.selectedPriority;
 
     // Take copies of coming process to send corresponding cuntion
     var processesCopy = [];
@@ -77,7 +78,8 @@ const GanttChart = props => {
                 p.start,
                 p.finish,
                 p.wat,
-                p.tat
+                p.tat,
+                p.priority
             ));
         }
         if (p.cpuBurstTime2 > 0) {
@@ -90,7 +92,8 @@ const GanttChart = props => {
                 p.start,
                 p.finish,
                 p.wat,
-                p.tat
+                p.tat,
+                p.priority,
             ));
         }
         processesCopy.push(new Process(
@@ -102,7 +105,8 @@ const GanttChart = props => {
             p.start,
             p.finish,
             p.wat,
-            p.tat
+            p.tat,
+            p.priority,
         ));
     })
 
@@ -119,6 +123,11 @@ const GanttChart = props => {
             case 'RR':
                 if (burst=== "IOBurstTime") return RR(processes, quantumIO, burst,currentTime);
                 return RR(processes, quantum, burst,currentTime);
+            case 'PSP':
+                return PSP(processes, burst,currentTime,selectedPriority);
+            case 'PSNP':
+                return PSNP(processes, burst,currentTime,selectedPriority);
+            
         }
     }
 
@@ -159,8 +168,6 @@ const GanttChart = props => {
             var watObj = {};
             var tatObj = {};
             finalExecution.forEach(p => {
-                console.log("Cpu2Processes");
-                console.log(Cpu2Processes);
                 var t = Cpu2Processes.find(t => t.name == p.name);
                 if(t){
                     var wat = t.wat + p.wat;
@@ -200,7 +207,7 @@ const GanttChart = props => {
         <View>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }} >
                 <View style={{ flex: 1 }}>
-                    <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution.length >= 6 ? totalExecution : windowWidth - 40 }}>
+                    <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution.length >= 10 ? totalExecution : windowWidth - 40 }}>
                         <Text>CPU Gantt Chart</Text>
                         <FlatList
                             style={styles.chart}
@@ -219,7 +226,7 @@ const GanttChart = props => {
                     </View>
                     {IOdevice ?
 
-                        <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution.length >= 6 ? totalExecution : windowWidth - 40 }}>
+                        <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution.length >= 10 ? totalExecution : windowWidth - 40 }}>
                             <Text>I/O Device Gantt Chart</Text>
                             <FlatList
                                 style={styles.chart}
