@@ -3,6 +3,7 @@ export const icons = {
     SRTF :  require('./SRTF.png'), 
     FCFS :  require('./FCFS.png'),
     RR :  require('./RR.png'),
-    PS :  require('./PS.png'),
+    PSP :  require('./PS.png'),
+    PSNP :  require('./PS.png'),
     MLQ :  require('./MLQ.png')
 }
