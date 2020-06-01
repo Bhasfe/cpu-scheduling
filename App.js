@@ -29,7 +29,6 @@ export default function App() {
     );
   }
 
-
   return (
       <>
         <StatusBar backgroundColor={Colors.red}  />
@@ -37,7 +36,3 @@ export default function App() {
       </>
     );
 }
-
-const styles = StyleSheet.create({
-
-});
