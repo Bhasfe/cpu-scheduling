@@ -10,6 +10,7 @@ This application has been developed to simulate the *CPU scheduling algorithms* 
 * Shortest Job First (Non Preemptive)<br>
 * Shortest Remaining Time First (Preemptive)<br>
 * Round Robin (Preemptive)<br>
+* Priority Scheduling (Preemptive & Non Preemptive)<br>
 
 ### Requirements<br>
 [Node 12 LTS](https://nodejs.org/) or greater must be installed 
@@ -23,8 +24,8 @@ The dependancies must be installed, go to the project directory in terminal and 
  
 ### TODO's<br>
 * Optimization issues will solve
-* I/O device simulations will be added
-* Priorty Scheduling will be included
+* ~~I/O device simulations will be added~~
+* ~~Priority Scheduling will be included~~
 * Multilevel Queue Scheduling will be included
 
 **Special thanks to [baris5d](https://github.com/baris5d) for his great contributions in UI**
