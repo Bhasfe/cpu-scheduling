@@ -1,5 +1,9 @@
 ## Mobile CPU Scheduling Simulator<br>
 
+### Demo <br><br>
+
+![preview](https://github.com/Bhasfe/cpu-scheduling/blob/master/cpu-preview.gif?raw=true)
+
 ### Description<br>
 
 This application has been developed to simulate the *CPU scheduling algorithms* on a *Gantt Chart* by using **React Native (Expo CLI)**.
