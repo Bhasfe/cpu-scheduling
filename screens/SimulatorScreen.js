@@ -398,7 +398,7 @@ const SimulatorScreen = props => {
                                     return (null);
                                 }
                                 const newName = processesList.length === 0 ? 'P0' : 'P' + (parseInt((processesList[processesList.length - 1].name)[1]) + 1);
-                                setProcessesList(current => [...current, new process(newName)]);
+                                setProcessesList(current => [...current, new process(newName,0,0,0,0,0,0,0,0,0)]);
                             }} ></CustomButton>
 
 
@@ -481,6 +481,7 @@ const SimulatorScreen = props => {
                         </View>
                         <View>
                             <CustomButton title="RUN" style={{ width: '100%' }} onPress={() => {
+                                console.log(processesList)
                                 if (chartEnable) {
                                     Alert.alert("Simulation finished", "You have to reset simulation first !", [{ text: 'OK' }]);
                                     return (null);
