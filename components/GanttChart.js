@@ -193,7 +193,7 @@ const GanttChart = props => {
     var idle = 0;
 
     finalExecution.forEach(f => {
-        totalExecution += (f.finish - f.start) * 30
+        totalExecution += (f.finish - f.start) * 10
         timeFinished = f.finish;
         if (f.name === 'idle') {
             idle += f.finish - f.start;
@@ -207,7 +207,7 @@ const GanttChart = props => {
         <View>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }} >
                 <View style={{ flex: 1 }}>
-                    <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution.length >= 10 ? totalExecution : windowWidth - 40 }}>
+                    <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution.length >= 7 ? totalExecution : windowWidth - 40 }}>
                         <Text>CPU Gantt Chart</Text>
                         <FlatList
                             style={styles.chart}
@@ -226,7 +226,7 @@ const GanttChart = props => {
                     </View>
                     {IOdevice ?
 
-                        <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution.length >= 10 ? totalExecution : windowWidth - 40 }}>
+                        <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution.length >= 7 ? totalExecution : windowWidth - 40 }}>
                             <Text>I/O Device Gantt Chart</Text>
                             <FlatList
                                 style={styles.chart}
@@ -257,7 +257,7 @@ const GanttChart = props => {
                 <Text style={styles.resultText}>Average waiting time = {averageWait.toFixed(2)}</Text>
             </View>
             <View style={{ alignItems: 'center' }}>
-                <Text style={styles.resultText}>CPU Utilization = %{cpuUtilization.toFixed(2)}</Text>
+                <Text style={styles.resultText}>CPU Utilization = {cpuUtilization.toFixed(2)} %</Text>
             </View>
         </View>
     );
