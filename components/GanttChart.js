@@ -254,10 +254,10 @@ const GanttChart = props => {
                 </View>
             </ScrollView>
             <View style={{ alignItems: 'center', marginVertical: 10 }}>
-                <Text style={{ color: Color.backgroundColor }}>Average waiting time = {averageWait.toFixed(2)}</Text>
+                <Text style={styles.resultText}>Average waiting time = {averageWait.toFixed(2)}</Text>
             </View>
-            <View style={{ alignItems: 'center', marginVertical: 10 }}>
-                <Text style={{ color: Color.backgroundColor }}>CPU Utilization = %{cpuUtilization.toFixed(2)}</Text>
+            <View style={{ alignItems: 'center' }}>
+                <Text style={styles.resultText}>CPU Utilization = %{cpuUtilization.toFixed(2)}</Text>
             </View>
         </View>
     );
@@ -295,6 +295,16 @@ const styles = StyleSheet.create({
     calculationsText: {
         color: Color.red,
         fontSize: 11,
+    },
+    resultText:{
+        borderColor: Color.lightRed,
+        borderWidth:1,
+        color: Color.lightRed, 
+        paddingTop:10,
+        paddingBottom:10,
+        paddingLeft: 20,
+        paddingRight:20,
+        borderRadius:20
     }
 
 });
