@@ -286,7 +286,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderColor: Color.borderColorSimulator,
-        borderWidth: 1,
         paddingTop: 10,
         paddingBottom: 10,
         marginTop: 6,
@@ -294,7 +293,8 @@ const styles = StyleSheet.create({
     },
     calculationsText: {
         color: Color.red,
-        fontSize: 11,
+        fontSize: 12,
+        fontFamily: 'open-sans'
     },
     resultText:{
         borderColor: Color.lightRed,
