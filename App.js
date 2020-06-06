@@ -31,6 +31,7 @@ export default function App() {
 
   return (
       <>
+        {console.disableYellowBox = true}
         <StatusBar backgroundColor={Colors.red}  />
         <AppNavigator />
       </>
