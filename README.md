@@ -1,5 +1,7 @@
 ## Mobile CPU Scheduling Simulator<br>
 
+[<img src=https://github.com/Bhasfe/cpu-scheduling/blob/master/googleplay-badge.png />](https://play.google.com/store/apps/details?id=com.cpusimulator)
+
 ### Demo <br><br>
 
 ![preview](https://github.com/Bhasfe/cpu-scheduling/blob/master/cpu-preview.gif?raw=true)
