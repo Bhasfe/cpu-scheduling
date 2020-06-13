@@ -3,7 +3,7 @@ import process from '../models/process';
 
 // Shortest Job First function
 
-export const SJF = (processesCopy,burst,currentTime) => {
+export const SJF = (processesCopy, burst, currentTime) => {
 
     const BURST_TYPE = burst
 
@@ -41,7 +41,7 @@ export const SJF = (processesCopy,burst,currentTime) => {
             // current time is incremented as burst time of the process
             currentTime += min;
             flag--;
-        // If there is no process available to run at currentTime, current time is incremented until any process will be available to run
+            // If there is no process available to run at currentTime, current time is incremented until any process will be available to run
         } else {
             var timeStart = currentTime;
             do {
@@ -51,27 +51,27 @@ export const SJF = (processesCopy,burst,currentTime) => {
             // Adding idle status into final Execution
             finalExecution.push(new process(
                 "idle",
-                timeStart, 
+                timeStart,
                 currentTime - timeStart,
                 currentTime - timeStart,
                 null,
-                timeStart, 
+                timeStart,
                 currentTime,
                 0,
                 0
-                ));
+            ));
         }
     } while (flag != 0);
 
     var averageWait = averageWait / finalExecution.length;
-    if(BURST_TYPE!="IOBurstTime") return [finalExecution, averageWait,currentTime];
+    if (BURST_TYPE != "IOBurstTime") return [finalExecution, averageWait, currentTime];
     else return finalExecution;
 };
 
 
 // First Come First Serve function
 
-export const FCFS = (processesCopy,burst,currentTime) => {
+export const FCFS = (processesCopy, burst, currentTime) => {
 
     const BURST_TYPE = burst
 
@@ -120,7 +120,7 @@ export const FCFS = (processesCopy,burst,currentTime) => {
             currentTime += filtered[index][BURST_TYPE];
             flag--;
 
-        // If there is no process available to run at currentTime, current time is incremented until any process will be available to run
+            // If there is no process available to run at currentTime, current time is incremented until any process will be available to run
         } else {
             var timeStart = currentTime;
             do {
@@ -130,28 +130,28 @@ export const FCFS = (processesCopy,burst,currentTime) => {
             // Adding idle status into final Execution
             finalExecution.push(new process(
                 "idle",
-                timeStart, 
+                timeStart,
                 currentTime - timeStart,
                 currentTime - timeStart,
                 null,
-                timeStart, 
-                currentTime, 
+                timeStart,
+                currentTime,
                 0,
                 0
-                ));
+            ));
         }
     } while (flag != 0);
 
     averageWait = averageWait / finalExecution.length;
 
-    if(BURST_TYPE!="IOBurstTime") return [finalExecution, averageWait,currentTime];
+    if (BURST_TYPE != "IOBurstTime") return [finalExecution, averageWait, currentTime];
     else return finalExecution;
 };
 
 
 // Shortest Remaining Time function
 
-export const SRTF = (processesCopy,burst,currentTime) => {
+export const SRTF = (processesCopy, burst, currentTime) => {
 
     var currentTime = currentTime;
 
@@ -176,10 +176,10 @@ export const SRTF = (processesCopy,burst,currentTime) => {
     var arrivings = [];
     var processNames = [];
     for (let i = 0; i < processesCopy.length; i++) {
-
         if (!processNames.includes(processesCopy[i].name)) processNames.push(processesCopy[i].name);
         if (!arrivings.includes(processesCopy[i].arrivingTime)) arrivings.push(processesCopy[i].arrivingTime);
-
+    }
+    for (let i = 0; i < processesCopy.length; i++) {
         for (let j = 0; j < processesCopy.length - i - 1; j++) {
             if ((processesCopy[j].arrivingTime === processesCopy[j + 1].arrivingTime) && (processesCopy[j][BURST_TYPE] > processesCopy[j + 1][BURST_TYPE])) {
                 var temp = processesCopy[j + 1];
@@ -237,16 +237,16 @@ export const SRTF = (processesCopy,burst,currentTime) => {
                 // If process is finished, it is added to final execution and remove from the processesCopy
                 if (p[BURST_TYPE] === 0) {
                     finalExecution.push(new process(
-                        p.name, 
-                        timeStart, 
+                        p.name,
+                        timeStart,
                         currentTime - timeStart,
                         currentTime - timeStart,
                         currentTime - timeStart,
-                        timeStart, 
-                        currentTime, 
-                        timeStart - p.arrivingTime, 
+                        timeStart,
+                        currentTime,
+                        timeStart - p.arrivingTime,
                         currentTime - p.arrivingTime
-                        ));
+                    ));
                     flag--;
                     processesCopy = processesCopy.filter(t => t != p);
                     flag2 = false;
@@ -269,16 +269,16 @@ export const SRTF = (processesCopy,burst,currentTime) => {
                     // current process will go to end of processCopy and new process will be added to beginning of processCopy
                     if (temp[0][BURST_TYPE] < p[BURST_TYPE]) {
                         finalExecution.push(new process(
-                            p.name, 
-                            timeStart, 
+                            p.name,
+                            timeStart,
                             burstStart - p[BURST_TYPE],
                             burstStart - p[BURST_TYPE],
-                            burstStart - p[BURST_TYPE], 
-                            timeStart, 
-                            currentTime, 
-                            timeStart - p.arrivingTime, 
+                            burstStart - p[BURST_TYPE],
+                            timeStart,
+                            currentTime,
+                            timeStart - p.arrivingTime,
                             currentTime - p.arrivingTime
-                            ));
+                        ));
                         p.arrivingTime = currentTime;
                         processesCopy.push(p);
                         processesCopy.shift();
@@ -287,7 +287,7 @@ export const SRTF = (processesCopy,burst,currentTime) => {
                     }
                 }
             } while (flag2 === true)
-        // If there is no process available to run at currentTime, current time is incremented until any process will be available to run
+            // If there is no process available to run at currentTime, current time is incremented until any process will be available to run
         } else {
             var timeStart = currentTime;
             do {
@@ -295,16 +295,16 @@ export const SRTF = (processesCopy,burst,currentTime) => {
             } while (currentTime != p.arrivingTime);
             // Adding idle status into final Execution
             finalExecution.push(new process(
-                'idle', 
-                timeStart, 
+                'idle',
+                timeStart,
                 currentTime - timeStart,
                 currentTime - timeStart,
                 currentTime - timeStart,
-                timeStart, 
-                currentTime, 
-                0, 
+                timeStart,
+                currentTime,
+                0,
                 0
-                ));
+            ));
         }
 
     } while (flag != 0 && processesCopy.length != 0);
@@ -331,7 +331,7 @@ export const SRTF = (processesCopy,burst,currentTime) => {
     }
 
     var averageWait = averageWait / processNames.length;
-    if(BURST_TYPE!="IOBurstTime") return [finalExecution, averageWait,currentTime];
+    if (BURST_TYPE != "IOBurstTime") return [finalExecution, averageWait, currentTime];
     else return finalExecution;
 };
 
@@ -339,7 +339,7 @@ export const SRTF = (processesCopy,burst,currentTime) => {
 
 // Round Robin function
 
-export const RR = (processesCopy, quantum,burst,currentTime) => {
+export const RR = (processesCopy, quantum, burst, currentTime) => {
 
     const BURST_TYPE = burst
 
@@ -348,9 +348,11 @@ export const RR = (processesCopy, quantum,burst,currentTime) => {
     // Sorting by arriving time and getting the process names
 
     var processNames = [];
-
     for (let i = 0; i < processesCopy.length; i++) {
         if (!processNames.includes(processesCopy[i].name)) processNames.push(processesCopy[i].name);
+    }
+
+    for (let i = 0; i < processesCopy.length; i++) {
         for (let j = 0; j < processesCopy.length - i - 1; j++) {
             if (processesCopy[j].arrivingTime > processesCopy[j + 1].arrivingTime) {
                 var temp = processesCopy[j + 1];
@@ -367,7 +369,6 @@ export const RR = (processesCopy, quantum,burst,currentTime) => {
     do {
 
         for (let i = 0; i < processesCopy.length; i++) {
-            if (!processNames.includes(processesCopy[i].name)) processNames.push(processesCopy[i].name);
             for (let j = 0; j < processesCopy.length - i - 1; j++) {
                 if (processesCopy[j].arrivingTime > processesCopy[j + 1].arrivingTime) {
                     var temp = processesCopy[j + 1];
@@ -396,16 +397,16 @@ export const RR = (processesCopy, quantum,burst,currentTime) => {
                 // If process is finished it will be added into finalExecution and removed from processesCopy
                 if (p[BURST_TYPE] === 0) {
                     finalExecution.push(new process(
-                        p.name, 
-                        timeStart, 
+                        p.name,
+                        timeStart,
                         currentTime - timeStart,
                         currentTime - timeStart,
-                        null, 
-                        timeStart, 
-                        currentTime, 
-                        timeStart - p.arrivingTime, 
+                        null,
+                        timeStart,
+                        currentTime,
+                        timeStart - p.arrivingTime,
                         currentTime - p.arrivingTime
-                        ));
+                    ));
                     flag--;
                     processesCopy = processesCopy.filter(t => t != p);
                     flag2 = false;
@@ -413,24 +414,24 @@ export const RR = (processesCopy, quantum,burst,currentTime) => {
                 // If the execution stop because of the quantum time is done, it will go into the end of the processesCopy
                 else if (quantumStart === 0) {
                     finalExecution.push(new process(
-                        p.name, 
-                        timeStart, 
+                        p.name,
+                        timeStart,
                         burstStart - p[BURST_TYPE],
                         burstStart - p[BURST_TYPE],
-                        null, 
-                        timeStart, 
-                        currentTime, 
-                        timeStart - p.arrivingTime, 
+                        null,
+                        timeStart,
+                        currentTime,
+                        timeStart - p.arrivingTime,
                         currentTime - p.arrivingTime
-                        ));
+                    ));
                     p.arrivingTime = currentTime;
                     processesCopy.push(p);
                     processesCopy.shift();
                     flag2 = false;
                 }
             } while (flag2 === true)
-        
-        // If there is no process available to run at currentTime, current time is incremented until any process will be available to run
+
+            // If there is no process available to run at currentTime, current time is incremented until any process will be available to run
         } else {
             var timeStart = currentTime;
             do {
@@ -438,16 +439,16 @@ export const RR = (processesCopy, quantum,burst,currentTime) => {
             } while (currentTime != p.arrivingTime);
             // Adding idle status into final Execution
             finalExecution.push(new process(
-                'idle', 
-                timeStart, 
+                'idle',
+                timeStart,
                 currentTime - timeStart,
                 currentTime - timeStart,
-                null, 
-                timeStart, 
-                currentTime, 
-                0, 
+                null,
+                timeStart,
+                currentTime,
+                0,
                 0
-                ));
+            ));
         }
 
     } while (flag != 0 && processesCopy.length != 0);
@@ -474,16 +475,16 @@ export const RR = (processesCopy, quantum,burst,currentTime) => {
     }
 
     var averageWait = averageWait / processNames.length;
-    if(BURST_TYPE!="IOBurstTime") return [finalExecution, averageWait,currentTime];
+    if (BURST_TYPE != "IOBurstTime") return [finalExecution, averageWait, currentTime];
     else return finalExecution;
 };
 
 // Priority Scheduling (Non-Preemptive) function
 
-export const PSNP = (processesCopy,burst,currentTime,priorityType) => {
+export const PSNP = (processesCopy, burst, currentTime, priorityType) => {
 
     // If priorityType Largest sort processes by their priority (high to low) and convert priorityType Smallest indirectly
-    if(priorityType=="Largest"){
+    if (priorityType == "Largest") {
         for (let i = 0; i < processesCopy.length; i++) {
             for (let j = 0; j < processesCopy.length - i - 1; j++) {
                 if (processesCopy[j].priority < processesCopy[j + 1].priority) {
@@ -493,8 +494,8 @@ export const PSNP = (processesCopy,burst,currentTime,priorityType) => {
                 }
             }
         }
-        for(let i=0;i<processesCopy.length;i++){
-            processesCopy[i].priority = i+1;
+        for (let i = 0; i < processesCopy.length; i++) {
+            processesCopy[i].priority = i + 1;
         }
     }
 
@@ -534,7 +535,7 @@ export const PSNP = (processesCopy,burst,currentTime,priorityType) => {
             // current time is incremented as burst time of the process
             currentTime += filtered[index][BURST_TYPE];
             flag--;
-        // If there is no process available to run at currentTime, current time is incremented until any process will be available to run
+            // If there is no process available to run at currentTime, current time is incremented until any process will be available to run
         } else {
             var timeStart = currentTime;
             do {
@@ -544,28 +545,28 @@ export const PSNP = (processesCopy,burst,currentTime,priorityType) => {
             // Adding idle status into final Execution
             finalExecution.push(new process(
                 "idle",
-                timeStart, 
+                timeStart,
                 currentTime - timeStart,
                 currentTime - timeStart,
                 null,
-                timeStart, 
+                timeStart,
                 currentTime,
                 0,
                 0,
                 0,
-                ));
+            ));
         }
     } while (flag != 0);
 
     var averageWait = averageWait / finalExecution.length;
-    if(BURST_TYPE!="IOBurstTime") return [finalExecution, averageWait,currentTime];
+    if (BURST_TYPE != "IOBurstTime") return [finalExecution, averageWait, currentTime];
     else return finalExecution;
 };
 
 
 // Priority Scheduling (Preemptive) function
 
-export const PSP = (processesCopy,burst,currentTime,priorityType) => {
+export const PSP = (processesCopy, burst, currentTime, priorityType) => {
 
     var currentTime = currentTime;
 
@@ -574,7 +575,7 @@ export const PSP = (processesCopy,burst,currentTime,priorityType) => {
     var finalExecution = [];
 
     // If priorityType Largest sort processes by their priority (high to low) and convert priorityType Smallest indirectly
-    if(priorityType=="Largest"){
+    if (priorityType == "Largest") {
         for (let i = 0; i < processesCopy.length; i++) {
             for (let j = 0; j < processesCopy.length - i - 1; j++) {
                 if (processesCopy[j].priority < processesCopy[j + 1].priority) {
@@ -584,8 +585,8 @@ export const PSP = (processesCopy,burst,currentTime,priorityType) => {
                 }
             }
         }
-        for(let i=0;i<processesCopy.length;i++){
-            processesCopy[i].priority = i+1;
+        for (let i = 0; i < processesCopy.length; i++) {
+            processesCopy[i].priority = i + 1;
         }
     }
 
@@ -602,14 +603,13 @@ export const PSP = (processesCopy,burst,currentTime,priorityType) => {
     }
 
     // Sorting by priority
-
     var arrivings = [];
     var processNames = [];
     for (let i = 0; i < processesCopy.length; i++) {
-
         if (!processNames.includes(processesCopy[i].name)) processNames.push(processesCopy[i].name);
         if (!arrivings.includes(processesCopy[i].arrivingTime)) arrivings.push(processesCopy[i].arrivingTime);
-
+    }
+    for (let i = 0; i < processesCopy.length; i++) {
         for (let j = 0; j < processesCopy.length - i - 1; j++) {
             if ((processesCopy[j].arrivingTime === processesCopy[j + 1].arrivingTime) && (processesCopy[j].priority > processesCopy[j + 1].priority)) {
                 var temp = processesCopy[j + 1];
@@ -665,17 +665,17 @@ export const PSP = (processesCopy,burst,currentTime,priorityType) => {
                 // If process is finished, it is added to final execution and remove from the processesCopy
                 if (p[BURST_TYPE] === 0) {
                     finalExecution.push(new process(
-                        p.name, 
-                        timeStart, 
+                        p.name,
+                        timeStart,
                         currentTime - timeStart,
                         currentTime - timeStart,
                         currentTime - timeStart,
-                        timeStart, 
-                        currentTime, 
-                        timeStart - p.arrivingTime, 
+                        timeStart,
+                        currentTime,
+                        timeStart - p.arrivingTime,
                         currentTime - p.arrivingTime,
                         p.priority
-                        ));
+                    ));
                     flag--;
                     processesCopy = processesCopy.filter(t => t != p);
                     flag2 = false;
@@ -698,17 +698,17 @@ export const PSP = (processesCopy,burst,currentTime,priorityType) => {
                     // current process will go to end of processCopy and new process will be added to beginning of processCopy
                     if (temp[0].priority < p.priority) {
                         finalExecution.push(new process(
-                            p.name, 
-                            timeStart, 
+                            p.name,
+                            timeStart,
                             burstStart - p[BURST_TYPE],
                             burstStart - p[BURST_TYPE],
-                            burstStart - p[BURST_TYPE], 
-                            timeStart, 
-                            currentTime, 
-                            timeStart - p.arrivingTime, 
+                            burstStart - p[BURST_TYPE],
+                            timeStart,
+                            currentTime,
+                            timeStart - p.arrivingTime,
                             currentTime - p.arrivingTime,
                             p.priority
-                            ));
+                        ));
                         p.arrivingTime = currentTime;
                         processesCopy.push(p);
                         processesCopy.shift();
@@ -717,7 +717,7 @@ export const PSP = (processesCopy,burst,currentTime,priorityType) => {
                     }
                 }
             } while (flag2 === true)
-        // If there is no process available to run at currentTime, current time is incremented until any process will be available to run
+            // If there is no process available to run at currentTime, current time is incremented until any process will be available to run
         } else {
             var timeStart = currentTime;
             do {
@@ -725,17 +725,17 @@ export const PSP = (processesCopy,burst,currentTime,priorityType) => {
             } while (currentTime != p.arrivingTime);
             // Adding idle status into final Execution
             finalExecution.push(new process(
-                'idle', 
-                timeStart, 
+                'idle',
+                timeStart,
                 currentTime - timeStart,
                 currentTime - timeStart,
                 currentTime - timeStart,
-                timeStart, 
-                currentTime, 
-                0, 
+                timeStart,
+                currentTime,
+                0,
                 0,
                 0
-                ));
+            ));
         }
 
     } while (flag != 0 && processesCopy.length != 0);
@@ -760,8 +760,7 @@ export const PSP = (processesCopy,burst,currentTime,priorityType) => {
         })
         averageWait += watTotal;
     }
-
     var averageWait = averageWait / processNames.length;
-    if(BURST_TYPE!="IOBurstTime") return [finalExecution, averageWait,currentTime];
+    if (BURST_TYPE != "IOBurstTime") return [finalExecution, averageWait, currentTime];
     else return finalExecution;
 };
