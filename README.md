@@ -1,5 +1,7 @@
 ## Mobile CPU Scheduling Simulator<br>
 
+[<img src=https://github.com/Bhasfe/cpu-scheduling/blob/master/googleplay-badge.png />](https://play.google.com/store/apps/details?id=com.cpusimulator)
+
 ### Demo <br><br>
 
 ![preview](https://github.com/Bhasfe/cpu-scheduling/blob/master/cpu-preview.gif?raw=true)
@@ -10,7 +12,7 @@ This application has been developed to simulate the *CPU scheduling algorithms* 
 
 **The Algorithms**: 
 
-* First Come First Serve (Non Preemptive)<br>
+* First Come First Served (Non Preemptive)<br>
 * Shortest Job First (Non Preemptive)<br>
 * Shortest Remaining Time First (Preemptive)<br>
 * Round Robin (Preemptive)<br>
