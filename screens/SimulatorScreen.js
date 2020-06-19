@@ -248,14 +248,16 @@ const SimulatorScreen = props => {
                                 <View style={styles.IOContainer}>
                                     <Text style={styles.IOchoiceLabel}>I/O Algorithm: </Text>
                                     <Picker
-                                        enabled = {!chartEnable && IOdevice}
+                                        enabled = {!chartEnable}
                                         selectedValue={selectedIO}
                                         style={styles.IOalgorithmPicker}
                                         onValueChange={ value => setSelectedIO(value)}
                                         //mode="dropdown"
                                     >
                                         <Picker.Item label="FCFS" value="FCFS" />
+                                        <Picker.Item label="SRTF" value="SRTF" />
                                         <Picker.Item label="SJF" value="SJF" />
+                                        <Picker.Item label="RR" value="RR" />
                                     </Picker>
                                 </View>
                                 {selectedAlgorithm.shortName === "PSP"  || selectedAlgorithm.shortName === "PSNP" ? 
@@ -282,7 +284,7 @@ const SimulatorScreen = props => {
                             </View>
                             <View style={styles.itemContainer}>
                                 <Text style={styles.caption}>
-                                    {IOdevice || selectedAlgorithm.shortName === "PSP"  || selectedAlgorithm.shortName === "PSNP" ? "Arrive" : "Arrival Time" }
+                                    {IOdevice || selectedAlgorithm.shortName === "PSP"  || selectedAlgorithm.shortName === "PSNP" ? "Arrive" : "Arriving Time" }
                                 </Text>
                             </View>
 
