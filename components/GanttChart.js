@@ -28,9 +28,9 @@ const renderTags = (itemData, burst) => {
     return (
         <View style={{ ...styles.tag, flex: itemData.item[BURST_TYPE] }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-                {itemData.index === 0 ? <Text>{itemData.item.start}</Text> : <Text></Text>}
+                {itemData.index === 0 ? <Text style={{color:"black"}}>{itemData.item.start}</Text> : <Text></Text>}
                 <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'flex-end' }}>
-                    <Text>{itemData.item.finish}</Text>
+                    <Text style={{color:"black"}} >{itemData.item.finish}</Text>
                 </View>
             </View>
         </View>
@@ -231,8 +231,9 @@ const GanttChart = props => {
                 if (t) t.arrivingTime = f.finish;
             }
         })
+        var IOprocesses2 = [];
 
-        IOprocesses = chooseAlgorithm(props.selectedIO, processesCopyIO, "IOBurstTime",0);
+        IOprocesses2 = chooseAlgorithm(props.selectedIO, processesCopyIO, "IOBurstTime",0);
 
         var watObj = {};
         var tatObj = {};
@@ -249,7 +250,7 @@ const GanttChart = props => {
 
         // Second CPU Burst calculations
         if (processesCopyCpu2.length > 0) {
-            IOprocesses.forEach(f => {
+            IOprocesses2.forEach(f => {
                 totalExecutionIO += (f.finish - f.start) * 30
                 if (f.name != "idle") {
                     var t = processesCopyCpu2.find(i => i.name === f.name)
@@ -310,7 +311,7 @@ const GanttChart = props => {
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }} >
                 <View style={{ flex: 1 }}>
                     <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution3.length >= 7 ? totalExecution : windowWidth - 40 }}>
-                        <Text>CPU Gantt Chart</Text>
+                        <Text style={{color:"black"}}>CPU Gantt Chart</Text>
                         <FlatList
                             style={styles.chart}
                             keyExtractor={(item, id) => item.name}
@@ -329,7 +330,7 @@ const GanttChart = props => {
                     {IOdevice ?
 
                         <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution3.length >= 7 ? totalExecution : windowWidth - 40 }}>
-                            <Text>I/O Device Gantt Chart</Text>
+                            <Text style={{color:"black"}}>I/O Device Gantt Chart</Text>
                             <FlatList
                                 style={styles.chart}
                                 keyExtractor={(item, id) => item.name}
