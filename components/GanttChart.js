@@ -4,7 +4,6 @@ import { SJF, FCFS, SRTF, RR , PSP, PSNP } from '../data/functions';
 import Process from '../models/process'
 
 import Color from '../constants/Colors'
-import process from '../models/process';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -15,7 +14,7 @@ const renderSections = (itemData, burst) => {
     return (
         <View style={{ ...styles.section, flex: itemData.item[BURST_TYPE] }}>
             <View >
-                <Text style={{ color: Color.screen }}>{itemData.item.name.length===3 ? itemData.item.name.slice(0,-1) : itemData.item.name }</Text>
+                <Text style={{ color: Color.screen }}>{itemData.item.name}</Text>
             </View>
         </View>
     );
@@ -67,13 +66,8 @@ const GanttChart = props => {
     var processesCopy = [];
     var processesCopyIO = [];
     var processesCopyCpu2 = [];
-    var processesCopy2 = [];
-    var processesCopyTemp = [];
-
-    var totalTime = 0;
 
     props.processesList.forEach(p => {
-        totalTime += p.cpuBurstTime1;
         if (p.IOBurstTime > 0) {
             processesCopyIO.push(new Process(
                 p.name,
@@ -103,30 +97,6 @@ const GanttChart = props => {
             ));
         }
         processesCopy.push(new Process(
-            p.name,
-            p.arrivingTime,
-            p.cpuBurstTime1,
-            p.IOBurstTime,
-            p.cpuBurstTime2,
-            p.start,
-            p.finish,
-            p.wat,
-            p.tat,
-            p.priority,
-        ));
-        processesCopyTemp.push(new Process(
-            p.name,
-            p.arrivingTime,
-            p.cpuBurstTime1,
-            p.IOBurstTime,
-            p.cpuBurstTime2,
-            p.start,
-            p.finish,
-            p.wat,
-            p.tat,
-            p.priority,
-        ));
-        processesCopy2.push(new Process(
             p.name,
             p.arrivingTime,
             p.cpuBurstTime1,
@@ -179,6 +149,7 @@ const GanttChart = props => {
         })
 
         // Execute I/O Burst
+<<<<<<< HEAD
 
         IOprocesses = chooseAlgorithm(props.selectedIO, processesCopyIO, "IOBurstTime",0);
 
@@ -234,19 +205,9 @@ const GanttChart = props => {
         var IOprocesses2 = [];
 
         IOprocesses2 = chooseAlgorithm(props.selectedIO, processesCopyIO, "IOBurstTime",0);
-
-        var watObj = {};
-        var tatObj = {};
-        finalExecution2.forEach(p => {
-            var t = finalExecution.find(t => t.name.slice(0,2) == p.name.slice(0,2));
-            if(t){
-                var wat = t.wat + p.wat;
-                watObj[p.name.length === 3 ? p.name.slice(0,-1) : p.name] = wat;
-                finalExecution.filter(k => k.name.slice(0,2) == t.name.slice(0,2)).forEach(k =>{
-                    tatObj[p.name.slice(0,2)] = k.finish - props.processesList.find(j => j.name.slice(0,2) == k.name.slice(0,2)).arrivingTime;
-                })
-            }
-        });
+=======
+        IOprocesses = chooseAlgorithm(props.selectedIO, processesCopyIO, "IOBurstTime",0);
+>>>>>>> parent of 346d7d0... bug fixed
 
         // Second CPU Burst calculations
         if (processesCopyCpu2.length > 0) {
@@ -262,14 +223,15 @@ const GanttChart = props => {
             [Cpu2Processes, averageWait2] = chooseAlgorithm(props.selectedAlgorithm.functionName, processesCopyCpu2, "cpuBurstTime2",currentTime1);
             averageWait = (averageWait+averageWait2);
             // Wat & Tat calculations
-
-            finalExecution2.forEach(p => {
+            var watObj = {};
+            var tatObj = {};
+            finalExecution.forEach(p => {
                 var t = Cpu2Processes.find(t => t.name == p.name);
                 if(t){
                     var wat = t.wat + p.wat;
-                    watObj[p.name.length === 3 ? p.name.slice(0,-1) : p.name] = wat;
+                    watObj[p.name] = wat;
                     Cpu2Processes.filter(k => k.name == t.name).forEach(k =>{
-                        tatObj[p.name.length === 3 ? p.name.slice(0,-1) : p.name] = k.finish - props.processesList.find(j => j.name == k.name).arrivingTime;
+                        tatObj[p.name] = k.finish - props.processesList.find(j => j.name == k.name).arrivingTime;
                     })
                 }
             });
@@ -279,15 +241,8 @@ const GanttChart = props => {
             Object.keys(watObj).forEach(o => {
                 watList.push({name:o,wat:watObj[o],tat:tatObj[o]});
             })
-            finalExecution2 = finalExecution2.concat(Cpu2Processes);
+            finalExecution = finalExecution.concat(Cpu2Processes);
         };
-    }
-    
-    var finalExecution3 = [];
-    if(IOdevice){
-        finalExecution3 = finalExecution2
-    }else{
-        finalExecution3 = finalExecution
     }
 
     added = [];
@@ -295,8 +250,8 @@ const GanttChart = props => {
     var timeFinished = 0;
     var idle = 0;
 
-    finalExecution3.forEach(f => {
-        totalExecution += (f.finish - f.start) * 25
+    finalExecution.forEach(f => {
+        totalExecution += (f.finish - f.start) * 10
         timeFinished = f.finish;
         if (f.name === 'idle') {
             idle += f.finish - f.start;
@@ -310,27 +265,37 @@ const GanttChart = props => {
         <View>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }} >
                 <View style={{ flex: 1 }}>
+<<<<<<< HEAD
                     <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution3.length >= 7 ? totalExecution : windowWidth - 40 }}>
                         <Text style={{color:"black"}}>CPU Gantt Chart</Text>
+=======
+                    <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution.length >= 7 ? totalExecution : windowWidth - 40 }}>
+                        <Text>CPU Gantt Chart</Text>
+>>>>>>> parent of 346d7d0... bug fixed
                         <FlatList
                             style={styles.chart}
                             keyExtractor={(item, id) => item.name}
-                            data={finalExecution3}
+                            data={finalExecution}
                             renderItem={itemData => renderSections(itemData, "cpuBurstTime1")}
-                            numColumns={finalExecution3.length}
+                            numColumns={finalExecution.length}
                         />
                         <FlatList
                             keyExtractor={(item, id) => item.name}
-                            data={finalExecution3}
+                            data={finalExecution}
                             renderItem={itemData => renderTags(itemData, "cpuBurstTime1")}
-                            numColumns={finalExecution3.length}
+                            numColumns={finalExecution.length}
                         />
 
                     </View>
                     {IOdevice ?
 
+<<<<<<< HEAD
                         <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution3.length >= 7 ? totalExecution : windowWidth - 40 }}>
                             <Text style={{color:"black"}}>I/O Device Gantt Chart</Text>
+=======
+                        <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution.length >= 7 ? totalExecution : windowWidth - 40 }}>
+                            <Text>I/O Device Gantt Chart</Text>
+>>>>>>> parent of 346d7d0... bug fixed
                             <FlatList
                                 style={styles.chart}
                                 keyExtractor={(item, id) => item.name}
@@ -350,7 +315,7 @@ const GanttChart = props => {
                     
                     <FlatList
                             keyExtractor={(item, id) => item.name}
-                            data={IOdevice ? watList : finalExecution3}
+                            data={IOdevice ? watList : finalExecution}
                             renderItem={renderCalculations}
                             numColumns={IOdevice ? watList.length : props.processesList.length}
                         />

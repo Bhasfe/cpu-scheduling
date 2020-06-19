@@ -54,7 +54,7 @@ export const SJF = (processesCopy, burst, currentTime) => {
                 timeStart,
                 currentTime - timeStart,
                 currentTime - timeStart,
-                currentTime - timeStart,
+                null,
                 timeStart,
                 currentTime,
                 0,
@@ -133,7 +133,7 @@ export const FCFS = (processesCopy, burst, currentTime) => {
                 timeStart,
                 currentTime - timeStart,
                 currentTime - timeStart,
-                currentTime - timeStart,
+                null,
                 timeStart,
                 currentTime,
                 0,
@@ -149,7 +149,7 @@ export const FCFS = (processesCopy, burst, currentTime) => {
 };
 
 
-// Shortest Remaining Time First function
+// Shortest Remaining Time function
 
 export const SRTF = (processesCopy, burst, currentTime) => {
 
@@ -351,6 +351,7 @@ export const RR = (processesCopy, quantum, burst, currentTime) => {
     for (let i = 0; i < processesCopy.length; i++) {
         if (!processNames.includes(processesCopy[i].name)) processNames.push(processesCopy[i].name);
     }
+
     for (let i = 0; i < processesCopy.length; i++) {
         for (let j = 0; j < processesCopy.length - i - 1; j++) {
             if (processesCopy[j].arrivingTime > processesCopy[j + 1].arrivingTime) {
@@ -406,7 +407,6 @@ export const RR = (processesCopy, quantum, burst, currentTime) => {
                         timeStart - p.arrivingTime,
                         currentTime - p.arrivingTime
                     ));
-
                     flag--;
                     processesCopy = processesCopy.filter(t => t != p);
                     flag2 = false;
@@ -473,6 +473,7 @@ export const RR = (processesCopy, quantum, burst, currentTime) => {
         })
         averageWait += watTotal;
     }
+
     var averageWait = averageWait / processNames.length;
     if (BURST_TYPE != "IOBurstTime") return [finalExecution, averageWait, currentTime];
     else return finalExecution;
