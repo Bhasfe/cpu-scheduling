@@ -149,65 +149,7 @@ const GanttChart = props => {
         })
 
         // Execute I/O Burst
-<<<<<<< HEAD
-
         IOprocesses = chooseAlgorithm(props.selectedIO, processesCopyIO, "IOBurstTime",0);
-
-        var IOfinish = {}
-        IOprocesses.forEach(f => {
-            if(f.name!='idle') IOfinish[f.name] = f.finish;
-        })
-
-        processesCopyTemp.forEach(f=>{
-            if(IOfinish[f.name] < totalTime){
-                var name = "";
-                switch(f.name){
-                    case "P0":
-                        name = "P00";
-                        break;
-                    case "P1":
-                        name = "P11";
-                        break;
-                    case "P2":
-                        name = "P22";
-                        break;
-                    case "P3":
-                        name = "P33";
-                        break;
-                    case "P4":
-                        name = "P44";
-                        break;
-                }
-                processesCopy2.push(new process(
-                    name,
-                    IOfinish[f.name],
-                    f.cpuBurstTime2,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    f.priority,
-                ))
-                processesCopyCpu2 = processesCopyCpu2.filter(p => p.name != f.name);
-            }
-        })
-        
-        var finalExecution2 = [];
-        [finalExecution2, averageWait,currentTime1] = chooseAlgorithm(props.selectedAlgorithm.functionName, processesCopy2, "cpuBurstTime1",0);
-        finalExecution2.forEach(f => {
-            if (f.name != "idle") {
-                var t = processesCopyIO.find(i => i.name === f.name)
-                if (t) t.arrivingTime = f.finish;
-            }
-        })
-        var IOprocesses2 = [];
-
-        IOprocesses2 = chooseAlgorithm(props.selectedIO, processesCopyIO, "IOBurstTime",0);
-=======
-        IOprocesses = chooseAlgorithm(props.selectedIO, processesCopyIO, "IOBurstTime",0);
->>>>>>> parent of 346d7d0... bug fixed
 
         // Second CPU Burst calculations
         if (processesCopyCpu2.length > 0) {
@@ -265,13 +207,8 @@ const GanttChart = props => {
         <View>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }} >
                 <View style={{ flex: 1 }}>
-<<<<<<< HEAD
-                    <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution3.length >= 7 ? totalExecution : windowWidth - 40 }}>
-                        <Text style={{color:"black"}}>CPU Gantt Chart</Text>
-=======
                     <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution.length >= 7 ? totalExecution : windowWidth - 40 }}>
                         <Text>CPU Gantt Chart</Text>
->>>>>>> parent of 346d7d0... bug fixed
                         <FlatList
                             style={styles.chart}
                             keyExtractor={(item, id) => item.name}
@@ -289,13 +226,8 @@ const GanttChart = props => {
                     </View>
                     {IOdevice ?
 
-<<<<<<< HEAD
-                        <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution3.length >= 7 ? totalExecution : windowWidth - 40 }}>
-                            <Text style={{color:"black"}}>I/O Device Gantt Chart</Text>
-=======
                         <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution.length >= 7 ? totalExecution : windowWidth - 40 }}>
                             <Text>I/O Device Gantt Chart</Text>
->>>>>>> parent of 346d7d0... bug fixed
                             <FlatList
                                 style={styles.chart}
                                 keyExtractor={(item, id) => item.name}
