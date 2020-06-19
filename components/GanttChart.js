@@ -4,6 +4,7 @@ import { SJF, FCFS, SRTF, RR , PSP, PSNP } from '../data/functions';
 import Process from '../models/process'
 
 import Color from '../constants/Colors'
+import process from '../models/process';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -14,7 +15,7 @@ const renderSections = (itemData, burst) => {
     return (
         <View style={{ ...styles.section, flex: itemData.item[BURST_TYPE] }}>
             <View >
-                <Text style={{ color: Color.screen }}>{itemData.item.name}</Text>
+                <Text style={{ color: Color.screen }}>{itemData.item.name.length===3 ? itemData.item.name.slice(0,-1) : itemData.item.name }</Text>
             </View>
         </View>
     );
@@ -66,8 +67,13 @@ const GanttChart = props => {
     var processesCopy = [];
     var processesCopyIO = [];
     var processesCopyCpu2 = [];
+    var processesCopy2 = [];
+    var processesCopyTemp = [];
+
+    var totalTime = 0;
 
     props.processesList.forEach(p => {
+        totalTime += p.cpuBurstTime1;
         if (p.IOBurstTime > 0) {
             processesCopyIO.push(new Process(
                 p.name,
@@ -97,6 +103,30 @@ const GanttChart = props => {
             ));
         }
         processesCopy.push(new Process(
+            p.name,
+            p.arrivingTime,
+            p.cpuBurstTime1,
+            p.IOBurstTime,
+            p.cpuBurstTime2,
+            p.start,
+            p.finish,
+            p.wat,
+            p.tat,
+            p.priority,
+        ));
+        processesCopyTemp.push(new Process(
+            p.name,
+            p.arrivingTime,
+            p.cpuBurstTime1,
+            p.IOBurstTime,
+            p.cpuBurstTime2,
+            p.start,
+            p.finish,
+            p.wat,
+            p.tat,
+            p.priority,
+        ));
+        processesCopy2.push(new Process(
             p.name,
             p.arrivingTime,
             p.cpuBurstTime1,
@@ -149,7 +179,73 @@ const GanttChart = props => {
         })
 
         // Execute I/O Burst
+
         IOprocesses = chooseAlgorithm(props.selectedIO, processesCopyIO, "IOBurstTime",0);
+
+        var IOfinish = {}
+        IOprocesses.forEach(f => {
+            if(f.name!='idle') IOfinish[f.name] = f.finish;
+        })
+
+        processesCopyTemp.forEach(f=>{
+            if(IOfinish[f.name] < totalTime){
+                var name = "";
+                switch(f.name){
+                    case "P0":
+                        name = "P00";
+                        break;
+                    case "P1":
+                        name = "P11";
+                        break;
+                    case "P2":
+                        name = "P22";
+                        break;
+                    case "P3":
+                        name = "P33";
+                        break;
+                    case "P4":
+                        name = "P44";
+                        break;
+                }
+                processesCopy2.push(new process(
+                    name,
+                    IOfinish[f.name],
+                    f.cpuBurstTime2,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    f.priority,
+                ))
+                processesCopyCpu2 = processesCopyCpu2.filter(p => p.name != f.name);
+            }
+        })
+        
+        var finalExecution2 = [];
+        [finalExecution2, averageWait,currentTime1] = chooseAlgorithm(props.selectedAlgorithm.functionName, processesCopy2, "cpuBurstTime1",0);
+        finalExecution2.forEach(f => {
+            if (f.name != "idle") {
+                var t = processesCopyIO.find(i => i.name === f.name)
+                if (t) t.arrivingTime = f.finish;
+            }
+        })
+
+        IOprocesses = chooseAlgorithm(props.selectedIO, processesCopyIO, "IOBurstTime",0);
+
+        var watObj = {};
+        var tatObj = {};
+        finalExecution2.forEach(p => {
+            var t = finalExecution.find(t => t.name.slice(0,2) == p.name.slice(0,2));
+            if(t){
+                var wat = t.wat + p.wat;
+                watObj[p.name.length === 3 ? p.name.slice(0,-1) : p.name] = wat;
+                finalExecution.filter(k => k.name.slice(0,2) == t.name.slice(0,2)).forEach(k =>{
+                    tatObj[p.name.slice(0,2)] = k.finish - props.processesList.find(j => j.name.slice(0,2) == k.name.slice(0,2)).arrivingTime;
+                })
+            }
+        });
 
         // Second CPU Burst calculations
         if (processesCopyCpu2.length > 0) {
@@ -165,15 +261,14 @@ const GanttChart = props => {
             [Cpu2Processes, averageWait2] = chooseAlgorithm(props.selectedAlgorithm.functionName, processesCopyCpu2, "cpuBurstTime2",currentTime1);
             averageWait = (averageWait+averageWait2);
             // Wat & Tat calculations
-            var watObj = {};
-            var tatObj = {};
-            finalExecution.forEach(p => {
+
+            finalExecution2.forEach(p => {
                 var t = Cpu2Processes.find(t => t.name == p.name);
                 if(t){
                     var wat = t.wat + p.wat;
-                    watObj[p.name] = wat;
+                    watObj[p.name.length === 3 ? p.name.slice(0,-1) : p.name] = wat;
                     Cpu2Processes.filter(k => k.name == t.name).forEach(k =>{
-                        tatObj[p.name] = k.finish - props.processesList.find(j => j.name == k.name).arrivingTime;
+                        tatObj[p.name.length === 3 ? p.name.slice(0,-1) : p.name] = k.finish - props.processesList.find(j => j.name == k.name).arrivingTime;
                     })
                 }
             });
@@ -183,8 +278,15 @@ const GanttChart = props => {
             Object.keys(watObj).forEach(o => {
                 watList.push({name:o,wat:watObj[o],tat:tatObj[o]});
             })
-            finalExecution = finalExecution.concat(Cpu2Processes);
+            finalExecution2 = finalExecution2.concat(Cpu2Processes);
         };
+    }
+    
+    var finalExecution3 = [];
+    if(IOdevice){
+        finalExecution3 = finalExecution2
+    }else{
+        finalExecution3 = finalExecution
     }
 
     added = [];
@@ -192,8 +294,8 @@ const GanttChart = props => {
     var timeFinished = 0;
     var idle = 0;
 
-    finalExecution.forEach(f => {
-        totalExecution += (f.finish - f.start) * 10
+    finalExecution3.forEach(f => {
+        totalExecution += (f.finish - f.start) * 25
         timeFinished = f.finish;
         if (f.name === 'idle') {
             idle += f.finish - f.start;
@@ -207,26 +309,26 @@ const GanttChart = props => {
         <View>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }} >
                 <View style={{ flex: 1 }}>
-                    <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution.length >= 7 ? totalExecution : windowWidth - 40 }}>
+                    <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution3.length >= 7 ? totalExecution : windowWidth - 40 }}>
                         <Text>CPU Gantt Chart</Text>
                         <FlatList
                             style={styles.chart}
                             keyExtractor={(item, id) => item.name}
-                            data={finalExecution}
+                            data={finalExecution3}
                             renderItem={itemData => renderSections(itemData, "cpuBurstTime1")}
-                            numColumns={finalExecution.length}
+                            numColumns={finalExecution3.length}
                         />
                         <FlatList
                             keyExtractor={(item, id) => item.name}
-                            data={finalExecution}
+                            data={finalExecution3}
                             renderItem={itemData => renderTags(itemData, "cpuBurstTime1")}
-                            numColumns={finalExecution.length}
+                            numColumns={finalExecution3.length}
                         />
 
                     </View>
                     {IOdevice ?
 
-                        <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution.length >= 7 ? totalExecution : windowWidth - 40 }}>
+                        <View style={{ ...styles.chart, width: totalExecution > windowWidth && finalExecution3.length >= 7 ? totalExecution : windowWidth - 40 }}>
                             <Text>I/O Device Gantt Chart</Text>
                             <FlatList
                                 style={styles.chart}
@@ -247,7 +349,7 @@ const GanttChart = props => {
                     
                     <FlatList
                             keyExtractor={(item, id) => item.name}
-                            data={IOdevice ? watList : finalExecution}
+                            data={IOdevice ? watList : finalExecution3}
                             renderItem={renderCalculations}
                             numColumns={IOdevice ? watList.length : props.processesList.length}
                         />
