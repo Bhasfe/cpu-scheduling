@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, ScrollView, Dimensions } from 'react-native';
-import { SJF, FCFS, SRTF, RR , PSP, PSNP } from '../data/functions';
-import Process from '../models/process'
+import { SJF, FCFS, SRTF, RR, PSP, PSNP } from '../data/functions';
 
 import Color from '../constants/Colors'
+import afterIO from '../data/afterIO';
+import execution from '../data/execution';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -27,9 +28,9 @@ const renderTags = (itemData, burst) => {
     return (
         <View style={{ ...styles.tag, flex: itemData.item[BURST_TYPE] }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-                {itemData.index === 0 ? <Text style={{color:"black"}}>{itemData.item.start}</Text> : <Text></Text>}
+                {itemData.index === 0 ? <Text style={{ color: "black" }}>{itemData.item.start}</Text> : <Text></Text>}
                 <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'flex-end' }}>
-                    <Text style={{color:"black"}} >{itemData.item.finish}</Text>
+                    <Text style={{ color: "black" }} >{itemData.item.finish}</Text>
                 </View>
             </View>
         </View>
@@ -62,130 +63,129 @@ const GanttChart = props => {
     var quantum = props.quantum;
     var selectedPriority = props.selectedPriority;
 
+    var processesListIO = [];
+
     // Take copies of coming process to send corresponding cuntion
-    var processesCopy = [];
-    var processesCopyIO = [];
-    var processesCopyCpu2 = [];
 
-    props.processesList.forEach(p => {
-        if (p.IOBurstTime > 0) {
-            processesCopyIO.push(new Process(
-                p.name,
-                p.arrivingTime,
-                p.cpuBurstTime1,
-                p.IOBurstTime,
-                p.cpuBurstTime2,
-                p.start,
-                p.finish,
-                p.wat,
-                p.tat,
-                p.priority
-            ));
-        }
-        if (p.cpuBurstTime2 > 0) {
-            processesCopyCpu2.push(new Process(
-                p.name,
-                p.arrivingTime,
-                p.cpuBurstTime1,
-                p.IOBurstTime,
-                p.cpuBurstTime2,
-                p.start,
-                p.finish,
-                p.wat,
-                p.tat,
-                p.priority,
-            ));
-        }
-        processesCopy.push(new Process(
-            p.name,
-            p.arrivingTime,
-            p.cpuBurstTime1,
-            p.IOBurstTime,
-            p.cpuBurstTime2,
-            p.start,
-            p.finish,
-            p.wat,
-            p.tat,
-            p.priority,
-        ));
-    })
+    var [finalExecution, currentTime1] = [0, 0];
 
-    var [finalExecution, averageWait,currentTime1] = [0, 0, 0];
+    var [finalExecutionWIO, currentTime1WIO] = [0, 0];
+    var finalExecutionIO = [];
+    var [finalExecutionIOtemp, currentTime1IOtemp] = [0, 0];
 
-    const chooseAlgorithm = (functionName, processes, burst,currentTime) => {
+
+    const chooseAlgorithm = (functionName, processes, burst, currentTime, IOarrives) => {
         switch (functionName) {
             case 'SJF':
-                return SJF(processes, burst,currentTime);
+                return SJF(processes, burst, currentTime, IOarrives);
             case 'FCFS':
-                return FCFS(processes, burst,currentTime);
+                return FCFS(processes, burst, currentTime, IOarrives);
             case 'SRTF':
-                return SRTF(processes, burst,currentTime);
+                return SRTF(processes, burst, currentTime, IOarrives);
             case 'RR':
-                if (burst=== "IOBurstTime") return RR(processes, quantumIO, burst,currentTime);
-                return RR(processes, quantum, burst,currentTime);
+                if (burst === "IOBurstTime") return RR(processes, quantumIO, burst, currentTime, IOarrives);
+                return RR(processes, quantum, burst, currentTime, IOarrives);
             case 'PSP':
-                return PSP(processes, burst,currentTime,selectedPriority);
+                return PSP(processes, burst, currentTime, selectedPriority, IOarrives);
             case 'PSNP':
-                return PSNP(processes, burst,currentTime,selectedPriority);
-            
+                return PSNP(processes, burst, currentTime, selectedPriority, IOarrives);
+
         }
     }
 
     // Execute first Cpu Bursts
-    [finalExecution, averageWait,currentTime1] = chooseAlgorithm(props.selectedAlgorithm.functionName, processesCopy, "cpuBurstTime1",0);
+    [finalExecutionWIO, currentTime1WIO] = chooseAlgorithm(props.selectedAlgorithm.functionName, props.processesList, "cpuBurstTime1", 0, IOarrives);
 
     // I/O Device Case
     var totalExecutionIO = 0;
     var IOprocesses = [];
-    var [Cpu2Processes,averageWait2,currentTime2] = [0,0,0];
+    var IOprocessesFinal = [];
 
     if (IOdevice) {
-        // replace arriving times for times for I/O devices
-        finalExecution.forEach(f => {
+        // replace arriving times for I/O devices
+        var IOarrives = {};
+        finalExecutionWIO.forEach(f => {
             if (f.name != "idle") {
-                var t = processesCopyIO.find(i => i.name === f.name)
-                if (t) t.arrivingTime = f.finish;
+                IOarrives[f.name] = f.finish;
             }
         })
 
         // Execute I/O Burst
-        IOprocesses = chooseAlgorithm(props.selectedIO, processesCopyIO, "IOBurstTime",0);
+        IOprocesses = chooseAlgorithm(props.selectedIO, props.processesList, "IOBurstTime", 0, IOarrives);
 
-        // Second CPU Burst calculations
-        if (processesCopyCpu2.length > 0) {
-            IOprocesses2.forEach(f => {
-                totalExecutionIO += (f.finish - f.start) * 30
-                if (f.name != "idle") {
-                    var t = processesCopyCpu2.find(i => i.name === f.name)
-                    if (t) t.arrivingTime = f.finish;
-                }
-            });
+        var IOfinish = {}
+        IOprocesses.forEach(f => {
+            // IO finishes
+            if (f.name != 'idle') IOfinish[f.name] = f.finish;
+        }
+        );
 
-            // Execute Second Cpu Burst
-            [Cpu2Processes, averageWait2] = chooseAlgorithm(props.selectedAlgorithm.functionName, processesCopyCpu2, "cpuBurstTime2",currentTime1);
-            averageWait = (averageWait+averageWait2);
-            // Wat & Tat calculations
-            var watObj = {};
-            var tatObj = {};
-            finalExecution.forEach(p => {
-                var t = Cpu2Processes.find(t => t.name == p.name);
-                if(t){
-                    var wat = t.wat + p.wat;
-                    watObj[p.name] = wat;
-                    Cpu2Processes.filter(k => k.name == t.name).forEach(k =>{
-                        tatObj[p.name] = k.finish - props.processesList.find(j => j.name == k.name).arrivingTime;
-                    })
-                }
-            });
+        processesListIO = afterIO(quantumIO, quantum, selectedPriority, props.selectedAlgorithm.functionName, props.selectedIO, props.processesList, IOfinish, currentTime1, true);
 
-            // convert watObj to watList
-            var watList = [];
-            Object.keys(watObj).forEach(o => {
-                watList.push({name:o,wat:watObj[o],tat:tatObj[o]});
-            })
-            finalExecution = finalExecution.concat(Cpu2Processes);
-        };
+
+        [finalExecutionIOtemp, currentTime1IOtemp] = chooseAlgorithm(props.selectedAlgorithm.functionName, processesListIO, "cpuBurstTime1", 0, IOarrives);
+
+
+
+        var IOarrivesFinal = {};
+        finalExecutionIOtemp.forEach(f => {
+            if (f.name != "idle" && f.IOBurstTime != 0 && !f.isCpu1finished) {
+                IOarrivesFinal[f.name] = f.finish;
+            }
+        })
+
+
+        IOprocessesFinal = chooseAlgorithm(props.selectedIO, processesListIO, "IOBurstTime", 0, IOarrivesFinal);
+
+
+        var IOfinishFinal = {}
+
+        IOprocessesFinal.forEach(v => {
+            if (v.name != 'idle') IOfinishFinal[v.name] = v.finish;
+        })
+
+        finalExecutionIO = execution(quantumIO, quantum, selectedPriority, props.selectedAlgorithm.functionName, processesListIO, IOfinishFinal);
+
+
+        IOprocessesFinal.forEach(f => {
+            // totalExecutionIO is used for the GanttChart styling
+            totalExecutionIO += (f.finish - f.start) * 25
+        }
+        );
+
     }
+
+    finalExecution = IOdevice ? finalExecutionIO : finalExecutionWIO;
+
+
+    // Tat and Wat calculations and assignments
+    var averageWait = 0;
+
+    var finishCPU = {}
+    var finishIO = {}
+    finalExecution.forEach(p => {
+        if (p.name != 'idle') finishCPU[p.name] = p.finish;
+    })
+    IOprocessesFinal.forEach(p => {
+        if (p.name != 'idle') finishIO[p.name] = p.finish;
+    })
+
+    for (let i = 0; i < props.processesList.length; i++) {
+        var temp = finalExecution.filter(p => p.name === props.processesList[i].name);
+        var watTotal = 0;
+        temp.forEach(t => {
+            watTotal += t.wat;
+        });
+        finalExecution.forEach(f => {
+            if (f.name === props.processesList[i].name) {
+                f.wat = watTotal;
+                f.tat = finishIO[f.name] > finishCPU[f.name] ? finishIO[f.name] - props.processesList[i].arrivingTime : finishCPU[f.name] - props.processesList[i].arrivingTime
+            }
+        })
+        averageWait += watTotal;
+    }
+
+    averageWait = averageWait / props.processesList.length;
 
     added = [];
     var totalExecution = 0;
@@ -193,7 +193,7 @@ const GanttChart = props => {
     var idle = 0;
 
     finalExecution.forEach(f => {
-        totalExecution += (f.finish - f.start) * 10
+        totalExecution += (f.finish - f.start) * 25
         timeFinished = f.finish;
         if (f.name === 'idle') {
             idle += f.finish - f.start;
@@ -231,26 +231,26 @@ const GanttChart = props => {
                             <FlatList
                                 style={styles.chart}
                                 keyExtractor={(item, id) => item.name}
-                                data={IOprocesses}
+                                data={IOprocessesFinal}
                                 renderItem={itemData => renderSections(itemData, "IOBurstTime")}
-                                numColumns={IOprocesses.length}
+                                numColumns={IOprocessesFinal.length}
                             />
                             <FlatList
                                 keyExtractor={(item, id) => item.name}
-                                data={IOprocesses}
+                                data={IOprocessesFinal}
                                 renderItem={itemData => renderTags(itemData, "IOBurstTime")}
-                                numColumns={IOprocesses.length}
+                                numColumns={IOprocessesFinal.length}
                             />
                         </View>
 
                         : <></>}
-                    
+
                     <FlatList
-                            keyExtractor={(item, id) => item.name}
-                            data={IOdevice ? watList : finalExecution}
-                            renderItem={renderCalculations}
-                            numColumns={IOdevice ? watList.length : props.processesList.length}
-                        />
+                        keyExtractor={(item, id) => item.name}
+                        data={finalExecution}
+                        renderItem={renderCalculations}
+                        numColumns={props.processesList.length}
+                    />
                 </View>
             </ScrollView>
             <View style={{ alignItems: 'center', marginVertical: 10 }}>
@@ -296,15 +296,15 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontFamily: 'open-sans'
     },
-    resultText:{
+    resultText: {
         borderColor: Color.lightRed,
-        borderWidth:1,
-        color: Color.lightRed, 
-        paddingTop:10,
-        paddingBottom:10,
+        borderWidth: 1,
+        color: Color.lightRed,
+        paddingTop: 10,
+        paddingBottom: 10,
         paddingLeft: 20,
-        paddingRight:20,
-        borderRadius:20
+        paddingRight: 20,
+        borderRadius: 20
     }
 
 });

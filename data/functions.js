@@ -3,14 +3,50 @@ import process from '../models/process';
 
 // Shortest Job First function
 
-export const SJF = (processesCopy, burst, currentTime) => {
+export const SJF = (processesList, burst, currentTime, IOarrives) => {
+
+    var processesCopy = [];
+
+    processesList.forEach(p => {
+        if (p.IOBurstTime > 0 && burst === "IOBurstTime") {
+            processesCopy.push(new process(
+                p.name,
+                IOarrives[p.name],
+                p.cpuBurstTime1,
+                p.IOBurstTime,
+                p.cpuBurstTime2,
+                p.start,
+                p.finish,
+                p.wat,
+                p.tat,
+                p.priority,
+                p.isTerminated,
+                p.isCpu1finished,
+            ));
+        }
+        else if (burst === 'cpuBurstTime1') {
+            processesCopy.push(new process(
+                p.name,
+                p.arrivingTime,
+                p.cpuBurstTime1,
+                p.IOBurstTime,
+                p.cpuBurstTime2,
+                p.start,
+                p.finish,
+                p.wat,
+                p.tat,
+                p.priority,
+                p.isTerminated,
+                p.isCpu1finished
+            ));
+        }
+    })
 
     const BURST_TYPE = burst
 
     var currentTime = currentTime;
 
     var finalExecution = [];
-    var averageWait = 0;
 
     // flag is used to check whether all processes in processesCopy is finished or not
     var flag = processesCopy.length;
@@ -36,7 +72,6 @@ export const SJF = (processesCopy, burst, currentTime) => {
             // Calculating wat and tat values
             filtered[index].wat = filtered[index].start - filtered[index].arrivingTime;
             filtered[index].tat = filtered[index].finish - filtered[index].arrivingTime;
-            averageWait += filtered[index].wat;
 
             // current time is incremented as burst time of the process
             currentTime += min;
@@ -63,22 +98,57 @@ export const SJF = (processesCopy, burst, currentTime) => {
         }
     } while (flag != 0);
 
-    var averageWait = averageWait / finalExecution.length;
-    if (BURST_TYPE != "IOBurstTime") return [finalExecution, averageWait, currentTime];
+    if (BURST_TYPE != "IOBurstTime") return [finalExecution, currentTime];
     else return finalExecution;
 };
 
 
 // First Come First Serve function
 
-export const FCFS = (processesCopy, burst, currentTime) => {
+export const FCFS = (processesList, burst, currentTime, IOarrives) => {
 
     const BURST_TYPE = burst
+
+    var processesCopy = [];
+
+    processesList.forEach(p => {
+        if (p.IOBurstTime > 0 && burst === "IOBurstTime") {
+            processesCopy.push(new process(
+                p.name,
+                IOarrives[p.name],
+                p.cpuBurstTime1,
+                p.IOBurstTime,
+                p.cpuBurstTime2,
+                p.start,
+                p.finish,
+                p.wat,
+                p.tat,
+                p.priority,
+                p.isTerminated,
+                p.isCpu1finished,
+            ));
+        }
+        else if (burst === 'cpuBurstTime1') {
+            processesCopy.push(new process(
+                p.name,
+                p.arrivingTime,
+                p.cpuBurstTime1,
+                p.IOBurstTime,
+                p.cpuBurstTime2,
+                p.start,
+                p.finish,
+                p.wat,
+                p.tat,
+                p.priority,
+                p.isTerminated,
+                p.isCpu1finished,
+            ));
+        }
+    })
 
     var currentTime = currentTime;
 
     var finalExecution = [];
-    var averageWait = 0;
 
     // flag is used to check whether all processes in processesCopy is finished or not
     var flag = processesCopy.length;
@@ -114,8 +184,6 @@ export const FCFS = (processesCopy, burst, currentTime) => {
             // Calculating wat and tat values
             filtered[index].wat = filtered[index].start - filtered[index].arrivingTime;
             filtered[index].tat = filtered[index].finish - filtered[index].arrivingTime;
-            averageWait += filtered[index].wat;
-
 
             currentTime += filtered[index][BURST_TYPE];
             flag--;
@@ -142,20 +210,55 @@ export const FCFS = (processesCopy, burst, currentTime) => {
         }
     } while (flag != 0);
 
-    averageWait = averageWait / finalExecution.length;
-
-    if (BURST_TYPE != "IOBurstTime") return [finalExecution, averageWait, currentTime];
+    if (BURST_TYPE != "IOBurstTime") return [finalExecution, currentTime];
     else return finalExecution;
 };
 
 
 // Shortest Remaining Time function
 
-export const SRTF = (processesCopy, burst, currentTime) => {
+export const SRTF = (processesList, burst, currentTime, IOarrives) => {
 
     var currentTime = currentTime;
 
     const BURST_TYPE = burst
+
+    var processesCopy = [];
+
+    processesList.forEach(p => {
+        if (p.IOBurstTime > 0 && burst === "IOBurstTime") {
+            processesCopy.push(new process(
+                p.name,
+                IOarrives[p.name],
+                p.cpuBurstTime1,
+                p.IOBurstTime,
+                p.cpuBurstTime2,
+                p.start,
+                p.finish,
+                p.wat,
+                p.tat,
+                p.priority,
+                p.isTerminated,
+                p.isCpu1finished,
+            ));
+        }
+        else if (burst === 'cpuBurstTime1') {
+            processesCopy.push(new process(
+                p.name,
+                p.arrivingTime,
+                p.cpuBurstTime1,
+                p.IOBurstTime,
+                p.cpuBurstTime2,
+                p.start,
+                p.finish,
+                p.wat,
+                p.tat,
+                p.priority,
+                p.isTerminated,
+                p.isCpu1finished,
+            ));
+        }
+    })
 
     var finalExecution = [];
 
@@ -245,7 +348,10 @@ export const SRTF = (processesCopy, burst, currentTime) => {
                         timeStart,
                         currentTime,
                         timeStart - p.arrivingTime,
-                        currentTime - p.arrivingTime
+                        currentTime - p.arrivingTime,
+                        p.priority,
+                        p.isTerminated,
+                        p.isCpu1finished,
                     ));
                     flag--;
                     processesCopy = processesCopy.filter(t => t != p);
@@ -277,7 +383,10 @@ export const SRTF = (processesCopy, burst, currentTime) => {
                             timeStart,
                             currentTime,
                             timeStart - p.arrivingTime,
-                            currentTime - p.arrivingTime
+                            currentTime - p.arrivingTime,
+                            p.priority,
+                            p.isTerminated,
+                            p.isCpu1finished,
                         ));
                         p.arrivingTime = currentTime;
                         processesCopy.push(p);
@@ -309,29 +418,7 @@ export const SRTF = (processesCopy, burst, currentTime) => {
 
     } while (flag != 0 && processesCopy.length != 0);
 
-    // Tat and Wat calculations and assignments
-
-    var averageWait = 0;
-
-    for (let i = 0; i < processNames.length; i++) {
-        var temp = finalExecution.filter(p => p.name === processNames[i]);
-        var watTotal = 0;
-        var tatTotal = 0;
-        temp.forEach(t => {
-            watTotal += t.wat;
-            tatTotal += t.tat;
-        });
-        finalExecution.forEach(f => {
-            if (f.name === processNames[i]) {
-                f.wat = watTotal;
-                f.tat = tatTotal;
-            }
-        })
-        averageWait += watTotal;
-    }
-
-    var averageWait = averageWait / processNames.length;
-    if (BURST_TYPE != "IOBurstTime") return [finalExecution, averageWait, currentTime];
+    if (BURST_TYPE != "IOBurstTime") return [finalExecution, currentTime];
     else return finalExecution;
 };
 
@@ -339,9 +426,46 @@ export const SRTF = (processesCopy, burst, currentTime) => {
 
 // Round Robin function
 
-export const RR = (processesCopy, quantum, burst, currentTime) => {
+export const RR = (processesList, quantum, burst, currentTime, IOarrives) => {
 
     const BURST_TYPE = burst
+
+    var processesCopy = [];
+
+    processesList.forEach(p => {
+        if (p.IOBurstTime > 0 && burst === "IOBurstTime") {
+            processesCopy.push(new process(
+                p.name,
+                IOarrives[p.name],
+                p.cpuBurstTime1,
+                p.IOBurstTime,
+                p.cpuBurstTime2,
+                p.start,
+                p.finish,
+                p.wat,
+                p.tat,
+                p.priority,
+                p.isTerminated,
+                p.isCpu1finished,
+            ));
+        }
+        else if (burst === 'cpuBurstTime1') {
+            processesCopy.push(new process(
+                p.name,
+                p.arrivingTime,
+                p.cpuBurstTime1,
+                p.IOBurstTime,
+                p.cpuBurstTime2,
+                p.start,
+                p.finish,
+                p.wat,
+                p.tat,
+                p.priority,
+                p.isTerminated,
+                p.isCpu1finished,
+            ));
+        }
+    })
 
     var finalExecution = [];
 
@@ -401,11 +525,14 @@ export const RR = (processesCopy, quantum, burst, currentTime) => {
                         timeStart,
                         currentTime - timeStart,
                         currentTime - timeStart,
-                        null,
+                        currentTime - timeStart,
                         timeStart,
                         currentTime,
                         timeStart - p.arrivingTime,
-                        currentTime - p.arrivingTime
+                        currentTime - p.arrivingTime,
+                        p.priority,
+                        p.isTerminated,
+                        p.isCpu1finished
                     ));
                     flag--;
                     processesCopy = processesCopy.filter(t => t != p);
@@ -418,11 +545,14 @@ export const RR = (processesCopy, quantum, burst, currentTime) => {
                         timeStart,
                         burstStart - p[BURST_TYPE],
                         burstStart - p[BURST_TYPE],
-                        null,
+                        burstStart - p[BURST_TYPE],
                         timeStart,
                         currentTime,
                         timeStart - p.arrivingTime,
-                        currentTime - p.arrivingTime
+                        currentTime - p.arrivingTime,
+                        p.priority,
+                        p.isTerminated,
+                        p.isCpu1finished
                     ));
                     p.arrivingTime = currentTime;
                     processesCopy.push(p);
@@ -443,45 +573,60 @@ export const RR = (processesCopy, quantum, burst, currentTime) => {
                 timeStart,
                 currentTime - timeStart,
                 currentTime - timeStart,
-                null,
+                currentTime - timeStart,
                 timeStart,
                 currentTime,
                 0,
-                0
+                0,
             ));
         }
 
     } while (flag != 0 && processesCopy.length != 0);
 
-    // Tat and Wat calculations and assignments
-
-    var averageWait = 0;
-
-    for (let i = 0; i < processNames.length; i++) {
-        var temp = finalExecution.filter(p => p.name === processNames[i]);
-        var watTotal = 0;
-        var tatTotal = 0;
-        temp.forEach(t => {
-            watTotal += t.wat;
-            tatTotal += t.tat;
-        });
-        finalExecution.forEach(f => {
-            if (f.name === processNames[i]) {
-                f.wat = watTotal;
-                f.tat = tatTotal;
-            }
-        })
-        averageWait += watTotal;
-    }
-
-    var averageWait = averageWait / processNames.length;
-    if (BURST_TYPE != "IOBurstTime") return [finalExecution, averageWait, currentTime];
+    if (BURST_TYPE != "IOBurstTime") return [finalExecution, currentTime];
     else return finalExecution;
 };
 
 // Priority Scheduling (Non-Preemptive) function
 
-export const PSNP = (processesCopy, burst, currentTime, priorityType) => {
+export const PSNP = (processesList, burst, currentTime, priorityType, IOarrives) => {
+
+    var processesCopy = [];
+
+    processesList.forEach(p => {
+        if (p.IOBurstTime > 0 && burst === "IOBurstTime") {
+            processesCopy.push(new process(
+                p.name,
+                IOarrives[p.name],
+                p.cpuBurstTime1,
+                p.IOBurstTime,
+                p.cpuBurstTime2,
+                p.start,
+                p.finish,
+                p.wat,
+                p.tat,
+                p.priority,
+                p.isTerminated,
+                p.isCpu1finished,
+            ));
+        }
+        else if (burst === 'cpuBurstTime1') {
+            processesCopy.push(new process(
+                p.name,
+                p.arrivingTime,
+                p.cpuBurstTime1,
+                p.IOBurstTime,
+                p.cpuBurstTime2,
+                p.start,
+                p.finish,
+                p.wat,
+                p.tat,
+                p.priority,
+                p.isTerminated,
+                p.isCpu1finished,
+            ));
+        }
+    })
 
     // If priorityType Largest sort processes by their priority (high to low) and convert priorityType Smallest indirectly
     if (priorityType == "Largest") {
@@ -504,7 +649,6 @@ export const PSNP = (processesCopy, burst, currentTime, priorityType) => {
     var currentTime = currentTime;
 
     var finalExecution = [];
-    var averageWait = 0;
 
     // flag is used to check whether all processes in processesCopy is finished or not
     var flag = processesCopy.length;
@@ -530,7 +674,6 @@ export const PSNP = (processesCopy, burst, currentTime, priorityType) => {
             // Calculating wat and tat values
             filtered[index].wat = filtered[index].start - filtered[index].arrivingTime;
             filtered[index].tat = filtered[index].finish - filtered[index].arrivingTime;
-            averageWait += filtered[index].wat;
 
             // current time is incremented as burst time of the process
             currentTime += filtered[index][BURST_TYPE];
@@ -558,15 +701,52 @@ export const PSNP = (processesCopy, burst, currentTime, priorityType) => {
         }
     } while (flag != 0);
 
-    var averageWait = averageWait / finalExecution.length;
-    if (BURST_TYPE != "IOBurstTime") return [finalExecution, averageWait, currentTime];
+    if (BURST_TYPE != "IOBurstTime") return [finalExecution, currentTime];
     else return finalExecution;
 };
 
 
 // Priority Scheduling (Preemptive) function
 
-export const PSP = (processesCopy, burst, currentTime, priorityType) => {
+export const PSP = (processesList, burst, currentTime, priorityType, IOarrives) => {
+
+    var processesCopy = [];
+
+    processesList.forEach(p => {
+        if (p.IOBurstTime > 0 && burst === "IOBurstTime") {
+            processesCopy.push(new process(
+                p.name,
+                IOarrives[p.name],
+                p.cpuBurstTime1,
+                p.IOBurstTime,
+                p.cpuBurstTime2,
+                p.start,
+                p.finish,
+                p.wat,
+                p.tat,
+                p.priority,
+                p.isTerminated,
+                p.isCpu1finished,
+            ));
+        }
+        else if (burst === 'cpuBurstTime1') {
+            processesCopy.push(new process(
+                p.name,
+                p.arrivingTime,
+                p.cpuBurstTime1,
+                p.IOBurstTime,
+                p.cpuBurstTime2,
+                p.start,
+                p.finish,
+                p.wat,
+                p.tat,
+                p.priority,
+                p.isTerminated,
+                p.isCpu1finished,
+            ));
+        }
+    })
+
 
     var currentTime = currentTime;
 
@@ -674,7 +854,9 @@ export const PSP = (processesCopy, burst, currentTime, priorityType) => {
                         currentTime,
                         timeStart - p.arrivingTime,
                         currentTime - p.arrivingTime,
-                        p.priority
+                        p.priority,
+                        p.isTerminated,
+                        p.isCpu1finished,
                     ));
                     flag--;
                     processesCopy = processesCopy.filter(t => t != p);
@@ -707,7 +889,9 @@ export const PSP = (processesCopy, burst, currentTime, priorityType) => {
                             currentTime,
                             timeStart - p.arrivingTime,
                             currentTime - p.arrivingTime,
-                            p.priority
+                            p.priority,
+                            p.isTerminated,
+                            p.isCpu1finished,
                         ));
                         p.arrivingTime = currentTime;
                         processesCopy.push(p);
@@ -740,27 +924,6 @@ export const PSP = (processesCopy, burst, currentTime, priorityType) => {
 
     } while (flag != 0 && processesCopy.length != 0);
 
-    // Tat and Wat calculations and assignments
-
-    var averageWait = 0;
-
-    for (let i = 0; i < processNames.length; i++) {
-        var temp = finalExecution.filter(p => p.name === processNames[i]);
-        var watTotal = 0;
-        var tatTotal = 0;
-        temp.forEach(t => {
-            watTotal += t.wat;
-            tatTotal += t.tat;
-        });
-        finalExecution.forEach(f => {
-            if (f.name === processNames[i]) {
-                f.wat = watTotal;
-                f.tat = tatTotal;
-            }
-        })
-        averageWait += watTotal;
-    }
-    var averageWait = averageWait / processNames.length;
-    if (BURST_TYPE != "IOBurstTime") return [finalExecution, averageWait, currentTime];
+    if (BURST_TYPE != "IOBurstTime") return [finalExecution, currentTime];
     else return finalExecution;
 };
