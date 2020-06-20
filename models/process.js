@@ -15,7 +15,7 @@ class process {
      *  
      */
     
-    constructor(name,arrivingTime,cpuBurstTime1 = 0,IOBurstTime = 0,cpuBurstTime2 = 0,start,finish,wat,tat,priority){
+    constructor(name,arrivingTime,cpuBurstTime1 = 0,IOBurstTime = 0,cpuBurstTime2 = 0,start,finish,wat,tat,priority,isTerminated = false,isCpu1finished = false){
         this.name = name
         this.arrivingTime = arrivingTime,
         this.cpuBurstTime1 = cpuBurstTime1;
@@ -26,6 +26,8 @@ class process {
         this.wat = wat;
         this.tat = tat;
         this.priority = priority;
+        this.isTerminated = isTerminated;
+        this.isCpu1finished = isCpu1finished;
     }
 }
 
